@@ -1,8 +1,5 @@
 package view.custom;
 
-import view.SystemColors;
-
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
@@ -11,10 +8,10 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class PanelFadeTransition extends JPanel implements ActionListener {
-    private static final int DELAY = 50; // delay between each timer tick
-    private static final int TOTAL_TIME = 4000; // total time for the fade effect
-    private float alpha = 0.0f; // starting alpha value
-    private Timer timer; // timer for the fade effect
+    private static final int DELAY = 50;
+    private static final int TOTAL_TIME = 4000;
+    private float alpha = 0.0f;
+    private final Timer timer;
 
     public PanelFadeTransition() {
         setBackground(SystemColors.BACKGROUND.getColorCode());
@@ -39,20 +36,19 @@ public class PanelFadeTransition extends JPanel implements ActionListener {
             setVisible(true);
             timer.stop();
         }
-        else if (alpha < 0.01f) { // if alpha is close to 0, set visibility to false to prevent flickering
+        else if (alpha < 0.01f) {
             setVisible(false);
         }
         repaint();
     }
 
     public void fade(boolean fadeIn) {
-        alpha = fadeIn ? 0.0f : 1.0f; // set the alpha value to the start or end of the fade
-        setVisible(true); // show the panel
-        if (!fadeIn) { // if fading out, set the visibility to false to prevent mouse clicks
+        alpha = fadeIn ? 0.0f : 1.0f;
+        setVisible(true);
+        if (!fadeIn) {
             setVisible(false);
         }
-        timer.start(); // start the timer
+        timer.start();
     }
-
 }
 

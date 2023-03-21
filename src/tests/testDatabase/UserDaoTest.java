@@ -1,4 +1,4 @@
-package model.database.test;
+package tests.testDatabase;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -23,12 +23,12 @@ public class UserDaoTest {
 
     @Test
     public void testAuthenticateUserSuccess() {
-        assertTrue(userDao.authenticateUser(100001, "123"));
+        assertTrue(userDao.authorizeUser(1, "123"));
     }
 
     @Test
     public void testAuthenticateUserFailure() {
-        assertFalse(userDao.authenticateUser(5, "5"));
+        assertFalse(userDao.authorizeUser(5, "5"));
     }
 }
 

@@ -1,10 +1,10 @@
 package view;
 
-import controller.DBController;
 import controller.UserSessionController;
 import model.database.UserDao;
 import view.custom.RoundedButton;
 import view.custom.RoundedPanel;
+import view.custom.SystemColors;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -25,10 +25,11 @@ public class Login extends JFrame {
                 setLocationRelativeTo(startProgram);
             }
         });
+        setUndecorated(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
         setAlwaysOnTop(true);
-        setBounds(100, 100, 540, 390);
+        setBounds(100, 100, 520, 320);
         setLocationRelativeTo(startProgram);
 
         RoundedPanel contentPane = new RoundedPanel();
@@ -41,13 +42,12 @@ public class Login extends JFrame {
         mainPanel.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
         mainPanel.setOpaque(false);
 
-
-        JLabel lblNewLabel = new JLabel("");
-        lblNewLabel.setIcon(new ImageIcon("src\\view\\images\\raum5_2.png"));
+        JLabel logo = new JLabel("");
+        logo.setIcon(new ImageIcon("src\\view\\images\\raum5_2.png"));
         mitarbeiterID = new JTextField();
-        mitarbeiterID.setColumns(10);
-        JLabel lblNewLabel_1 = new JLabel("Mitarbeiter ID:");
-        JLabel lblNewLabel_2 = new JLabel("Passwort:");
+        mitarbeiterID.setColumns(5);
+        JLabel mitarbeiterLabel = new JLabel("Mitarbeiter ID:");
+        JLabel passwordLabel = new JLabel("Passwort:");
 
         JButton btnLogin = new RoundedButton("Login");
         btnLogin.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -60,11 +60,11 @@ public class Login extends JFrame {
                 UserDao authorize = new UserDao();
                 int username = Integer.parseInt(mitarbeiterID.getText());
                 String password = String.valueOf(passwordCheck.getPassword());
-                if (authorize.authenticateUser(username, password)) {
+                if (authorize.authorizeUser(username, password)) {
                     dispose();
                     new UserSessionController(username, startProgram);
                 } else {
-                    JOptionPane.showMessageDialog(this, "Passwort ist falsch", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Username/Passwort ist falsch", "Error", JOptionPane.ERROR_MESSAGE);
                     mitarbeiterID.setText("");
                     passwordCheck.setText("");
                 }
@@ -75,14 +75,14 @@ public class Login extends JFrame {
             }
         });
 
-        JLabel lblNewLabel_3 = new JLabel("Cafeteria 123");
-        lblNewLabel_3.setFont(new Font("Candara", Font.BOLD, 30));
+        JLabel cafeteriaLabel = new JLabel("Cafeteria 123");
+        cafeteriaLabel.setFont(new Font("Candara", Font.BOLD, 30));
 
-        JLabel lblNewLabel_4 = new JLabel("Login");
-        lblNewLabel_4.setFont(new Font("Tahoma", Font.BOLD, 18));
+        JLabel loginLabel = new JLabel("Login");
+        loginLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
 
         passwordCheck = new JPasswordField();
-        passwordCheck.setColumns(10);
+        passwordCheck.setColumns(5);
 
         JButton btnReset = new RoundedButton("Reset");
         btnReset.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -92,11 +92,11 @@ public class Login extends JFrame {
             passwordCheck.setText("");
         });
 
-        JButton btnExit = new RoundedButton("Power Off");
+        RoundedButton btnExit = new RoundedButton("Power Off");
         btnExit.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         btnExit.setOpaque(false);
         btnExit.addActionListener(e -> {
-            DBController.closeConnection();
+            UserDao.closeConnection();
             System.exit(0);
         });
         btnExit.setForeground(Color.BLACK);
@@ -107,59 +107,64 @@ public class Login extends JFrame {
         btnReset.setForeground(Color.WHITE);
         btnReset.setFont(new Font("Tahoma", Font.BOLD, 12));
         btnReset.setBackground(SystemColors.BUTTONS.getColorCode());
+
         GroupLayout gl_contentPane = new GroupLayout(contentPane);
         gl_contentPane.setHorizontalGroup(
-                gl_contentPane.createParallelGroup(Alignment.TRAILING)
+                gl_contentPane.createParallelGroup(Alignment.LEADING)
                         .addGroup(gl_contentPane.createSequentialGroup()
                                 .addGap(25)
-                                .addComponent(lblNewLabel_3, GroupLayout.PREFERRED_SIZE, 194, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(cafeteriaLabel, GroupLayout.PREFERRED_SIZE, 194, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
-                                .addComponent(lblNewLabel))
-                        .addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
+                                .addComponent(logo))
+                        .addGroup(gl_contentPane.createSequentialGroup()
                                 .addGap(178)
-                                .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+                                .addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
                                         .addGroup(gl_contentPane.createSequentialGroup()
                                                 .addComponent(btnLogin, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(ComponentPlacement.RELATED)
                                                 .addComponent(btnReset, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(mitarbeiterID, GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
-                                        .addGroup(Alignment.TRAILING, gl_contentPane.createParallelGroup(Alignment.LEADING)
-                                                .addComponent(lblNewLabel_2)
-                                                .addComponent(passwordCheck, GroupLayout.PREFERRED_SIZE, 158, GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(mitarbeiterID, GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                                        .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+                                                .addComponent(passwordLabel)
+                                                .addComponent(passwordCheck, GroupLayout.PREFERRED_SIZE, 160, GroupLayout.PREFERRED_SIZE))
                                         .addGroup(gl_contentPane.createSequentialGroup()
                                                 .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-                                                        .addComponent(lblNewLabel_1)
-                                                        .addComponent(lblNewLabel_4))
-                                                .addPreferredGap(ComponentPlacement.RELATED, 88, GroupLayout.PREFERRED_SIZE)))
+                                                        .addComponent(mitarbeiterLabel)
+                                                        .addComponent(loginLabel))
+                                                .addPreferredGap(ComponentPlacement.RELATED)))
                                 .addGap(176))
-
+                        .addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
+                                .addContainerGap(427, Short.MAX_VALUE)
+                                .addComponent(btnExit, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())
         );
         gl_contentPane.setVerticalGroup(
                 gl_contentPane.createParallelGroup(Alignment.LEADING)
                         .addGroup(gl_contentPane.createSequentialGroup()
                                 .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-                                        .addComponent(lblNewLabel)
+                                        .addComponent(logo)
                                         .addGroup(gl_contentPane.createSequentialGroup()
                                                 .addGap(19)
-                                                .addComponent(lblNewLabel_3)))
+                                                .addComponent(cafeteriaLabel)))
                                 .addGap(18)
-                                .addComponent(lblNewLabel_4)
+                                .addComponent(loginLabel)
                                 .addPreferredGap(ComponentPlacement.RELATED)
-                                .addComponent(lblNewLabel_1)
+                                .addComponent(mitarbeiterLabel)
                                 .addPreferredGap(ComponentPlacement.RELATED)
                                 .addComponent(mitarbeiterID, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(ComponentPlacement.RELATED)
-                                .addComponent(lblNewLabel_2)
+                                .addPreferredGap(ComponentPlacement.UNRELATED)
+                                .addComponent(passwordLabel)
                                 .addGap(3)
                                 .addComponent(passwordCheck, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
                                 .addGap(18)
                                 .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
                                         .addComponent(btnLogin, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
                                         .addComponent(btnReset, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(83, Short.MAX_VALUE))
-
-
+                                .addPreferredGap(ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
+                                .addComponent(btnExit, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())
         );
         contentPane.setLayout(gl_contentPane);
+        contentPane.getRootPane().setDefaultButton(btnLogin);
     }
 }

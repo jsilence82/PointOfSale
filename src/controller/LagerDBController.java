@@ -10,7 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DBController {
+public class LagerDBController {
 
     private final List<Item> essenList;
     private final List<Item> trinkList;
@@ -18,7 +18,7 @@ public class DBController {
     private static final Connection connection = dbConnection.getConnection();
 
 
-    public DBController() {
+    public LagerDBController() {
         this.essenList = new ArrayList<>();
         this.trinkList = new ArrayList<>();
         getEssenFromDatabase();
@@ -110,14 +110,6 @@ public class DBController {
         }
     }
 
-    public static void closeConnection() {
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
     public List<Item> getEssenList() {
         return essenList;
     }

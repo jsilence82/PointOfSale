@@ -1,13 +1,13 @@
-package controller.test;
+package tests.testDatabase;
 
-import controller.DBController;
+import controller.LagerDBController;
 import model.items.Item;
 
 import java.util.List;
 
 public class TestPull {
     public static void main(String[] args) {
-        DBController pull = new DBController();
+        LagerDBController pull = new LagerDBController();
         List<Item> foods = pull.getEssenList();
         for(Item food : foods){
             System.out.println(food.getItemID() + " " + food.getDescription() + " " + food.getPreis() + " " + food.getLagerAnzahl());

@@ -1,11 +1,10 @@
-package testAdmin;
+package tests.testAdmin;
 
 import model.database.DatabaseConnection;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,10 +16,10 @@ import javax.swing.JTextArea;
 
 public class MitarbeiterPanel extends JPanel {
 
-    private JComboBox<String> comboBox;
-    private JTextArea vornameTextArea;
-    private JTextArea nachnameTextArea;
-    private JTextArea mitarbeiterIdTextArea;
+    private final JComboBox<String> comboBox;
+    private final JTextArea vornameTextArea;
+    private final JTextArea nachnameTextArea;
+    private final JTextArea mitarbeiterIdTextArea;
     private static final DatabaseConnection dbConnection = DatabaseConnection.getInstance();
     private static final Connection connection = dbConnection.getConnection();
 
@@ -31,7 +30,6 @@ public class MitarbeiterPanel extends JPanel {
         c.gridy = 0;
         c.anchor = GridBagConstraints.LINE_END;
 
-        // Create the components
         JLabel mitarbeiterLabel = new JLabel("Mitarbeiter:");
         comboBox = new JComboBox<>();
         vornameTextArea = new JTextArea(2, 20);
@@ -39,7 +37,6 @@ public class MitarbeiterPanel extends JPanel {
         mitarbeiterIdTextArea = new JTextArea(1, 10);
         mitarbeiterIdTextArea.setEditable(false);
 
-        // Add the components to the panel
         add(mitarbeiterLabel, c);
         c.gridx++;
         add(comboBox, c);
@@ -59,20 +56,15 @@ public class MitarbeiterPanel extends JPanel {
         c.gridx++;
         add(mitarbeiterIdTextArea, c);
 
-        // Load the data from the database
         ArrayList<Mitarbeiter> mitarbeiterList = loadMitarbeiter();
 
-        // Add the data to the combo box
         for (Mitarbeiter mitarbeiter : mitarbeiterList) {
             comboBox.addItem(mitarbeiter.getFullName());
         }
 
-        // Add a listener to the combo box
         comboBox.addActionListener(e -> {
-            // Get the selected item from the combo box
             String selectedFullName = (String) comboBox.getSelectedItem();
 
-            // Find the corresponding Mitarbeiter object
             Mitarbeiter selectedMitarbeiter = null;
             for (Mitarbeiter mitarbeiter : mitarbeiterList) {
                 if (mitarbeiter.getFullName().equals(selectedFullName)) {
@@ -81,7 +73,6 @@ public class MitarbeiterPanel extends JPanel {
                 }
             }
 
-            // Update the text areas with the selected Mitarbeiter's data
             vornameTextArea.setText(selectedMitarbeiter.getVorname());
             nachnameTextArea.setText(selectedMitarbeiter.getNachname());
             mitarbeiterIdTextArea.setText(String.valueOf(selectedMitarbeiter.getMitarbeiterId()));

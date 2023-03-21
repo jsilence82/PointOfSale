@@ -1,4 +1,7 @@
-package testAdmin;
+package tests;
+
+import tests.testAdmin.AddMitarbeiter;
+import tests.testAdmin.MitarbeiterPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +23,7 @@ public class TestMitarbeiterDB extends JFrame {
         setContentPane(contentPane);
 
         pack();
-        setLocationRelativeTo(null); // center the frame on the screen
+        setLocationRelativeTo(null);
         setVisible(true);
 
     getContentPane().add(panel);

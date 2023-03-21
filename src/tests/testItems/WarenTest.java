@@ -1,6 +1,6 @@
-package model.items.test;
+package tests.testItems;
 
-import controller.DBController;
+import controller.LagerDBController;
 import model.items.Item;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +12,7 @@ class WarenTest {
 
     @Test
     void testGetEssenFromDatabase() {
-        DBController waren = new DBController();
+        LagerDBController waren = new LagerDBController();
         List<Item> essenList = waren.getEssenList();
 
         asserList(essenList);
@@ -34,7 +34,7 @@ class WarenTest {
 
     @Test
     void testGetGetraenkFromDatabase() {
-        DBController waren = new DBController();
+        LagerDBController waren = new LagerDBController();
         List<Item> trinkList = waren.getTrinkList();
 
         asserList(trinkList);

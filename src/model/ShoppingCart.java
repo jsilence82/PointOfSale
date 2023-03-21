@@ -1,6 +1,6 @@
 package model;
 
-import controller.DBController;
+import controller.LagerDBController;
 import controller.UserSessionController;
 import model.items.Item;
 import view.SelectScreen;
@@ -36,36 +36,32 @@ public class ShoppingCart {
         return formattedDate + randomNumber;
     }
 
-//    public void addItem(Item item, int amount) {
-//        if(cart.containsKey(item)){
-//            cart.put(item, cart.get(item) + amount);
-//        } else {
-//            cart.put(item, amount);
-//        }
-//        screen.addToTally();
-//    }
     public void addItem(Item item, int amount) {
-        if(cart.containsKey(item)){
-            int currentAmount = cart.get(item);
-            int newAmount = currentAmount + amount;
-            if(newAmount > item.getLagerAnzahl()) {
-                JOptionPane.showMessageDialog(null, "Amount exceeds the stock!");
+        try {
+            if (cart.containsKey(item)) {
+                int currentAmount = cart.get(item);
+                int newAmount = currentAmount + amount;
+                if (newAmount > item.getLagerAnzahl()) {
+                    throw new IllegalArgumentException();
+                } else {
+                    cart.put(item, newAmount);
+                }
             } else {
-                cart.put(item, newAmount);
+                if (amount > item.getLagerAnzahl()) {
+                    throw new IllegalArgumentException();
+                } else {
+                    cart.put(item, amount);
+                }
             }
-        } else {
-            if(amount > item.getLagerAnzahl()) {
-                JOptionPane.showMessageDialog(null, "Amount exceeds the stock!");
-            } else {
-                cart.put(item, amount);
-            }
+            screen.addToTally();
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, "Die Menge übersteigt den Bestand!");
         }
-        screen.addToTally();
     }
 
 
-    public void removeItem(Item item){
-        if(cart.get(item) == 1){
+    public void removeItem(Item item) {
+        if (cart.get(item) == 1) {
             cart.remove(item);
         } else {
             cart.put(item, cart.get(item) - 1);
@@ -73,7 +69,7 @@ public class ShoppingCart {
         screen.addToTally();
     }
 
-    public void clearCart(){
+    public void clearCart() {
         cart.clear();
     }
 
@@ -81,13 +77,13 @@ public class ShoppingCart {
         return cart;
     }
 
-    public String getFormattedTotal(){
+    public String getFormattedTotal() {
         return euroFormat.format(getTotal());
     }
 
-    public double getTotal(){
+    public double getTotal() {
         double total = 0.00;
-        for(Map.Entry<Item, Integer> entry : cart.entrySet()){
+        for (Map.Entry<Item, Integer> entry : cart.entrySet()) {
             Item item = entry.getKey();
             double price = item.getPreis();
             total += (price * entry.getValue());
@@ -96,14 +92,14 @@ public class ShoppingCart {
     }
 
     public void buchungSchliessen() {
-            DBController.insertBestellung(bestellungID, mitarbeiterID, BigDecimal.valueOf(getTotal()));
-            for (Map.Entry<Item, Integer> entry : cart.entrySet()) {
-                Item item = entry.getKey();
-                int quantity = entry.getValue();
-                DBController.insertItemSold(bestellungID, item, quantity);
-                DBController.updateLagerBestand(item, quantity);
-            }
-            clearCart();
+        LagerDBController.insertBestellung(bestellungID, mitarbeiterID, BigDecimal.valueOf(getTotal()));
+        for (Map.Entry<Item, Integer> entry : cart.entrySet()) {
+            Item item = entry.getKey();
+            int quantity = entry.getValue();
+            LagerDBController.insertItemSold(bestellungID, item, quantity);
+            LagerDBController.updateLagerBestand(item, quantity);
+        }
+        clearCart();
     }
 
     public String getBestellungID() {

@@ -43,5 +43,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="miglayout" level="project" />
+    <orderEntry type="library" name="de.mkammerer.argon2.jvm" level="project" />
+    <orderEntry type="library" name="mockito.all" level="project" />
   </component>
 </module>
