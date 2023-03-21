@@ -1,8 +1,8 @@
 package controller;
 
 import model.database.DatabaseConnection;
-import model.items.Essen;
-import model.items.Getraenk;
+import model.items.Food;
+import model.items.Drink;
 import model.items.Item;
 
 import java.math.BigDecimal;
@@ -10,22 +10,21 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LagerDBController {
+public class ItemsDBController {
 
-    private final List<Item> essenList;
-    private final List<Item> trinkList;
+    private final List<Item> foodList;
+    private final List<Item> drinksList;
     private static final DatabaseConnection dbConnection = DatabaseConnection.getInstance();
     private static final Connection connection = dbConnection.getConnection();
 
-
-    public LagerDBController() {
-        this.essenList = new ArrayList<>();
-        this.trinkList = new ArrayList<>();
-        getEssenFromDatabase();
-        getGetraenkFromDatabase();
+    public ItemsDBController() {
+        this.foodList = new ArrayList<>();
+        this.drinksList = new ArrayList<>();
+        getFoodItemsFromDB();
+        getDrinkItemsFromDB();
     }
 
-    public void getEssenFromDatabase() {
+    public void getFoodItemsFromDB() {
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT EssenID, Essen, Preis, Anzahl FROM Essen where anzahl > 0 ORDER BY EssenID");
@@ -34,14 +33,14 @@ public class LagerDBController {
                 String description = resultSet.getString("Essen");
                 double price = resultSet.getDouble("Preis");
                 int numAvailable = resultSet.getInt("Anzahl");
-                essenList.add(new Essen(idNumber, description, numAvailable, price));
+                foodList.add(new Food(idNumber, description, numAvailable, price));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void getGetraenkFromDatabase() {
+    public void getDrinkItemsFromDB() {
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT TrinkenId, Trinken, Preis, Anzahl FROM Trinken where anzahl > 0 ORDER BY TrinkenId");
@@ -50,7 +49,7 @@ public class LagerDBController {
                 String description = resultSet.getString("Trinken");
                 double price = resultSet.getDouble("Preis");
                 int numAvailable = resultSet.getInt("Anzahl");
-                trinkList.add(new Getraenk(idNumber, description, numAvailable, price));
+                drinksList.add(new Drink(idNumber, description, numAvailable, price));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -58,26 +57,26 @@ public class LagerDBController {
     }
 
     public void refreshDatabase() {
-        getEssenFromDatabase();
-        getGetraenkFromDatabase();
+        getFoodItemsFromDB();
+        getDrinkItemsFromDB();
     }
 
-    public static void insertBestellung(String bestellungID, int mitarbeiterId, BigDecimal betrag) {
+    public static void insertOrder(String orderId, int userID, BigDecimal amount) {
         String sql = "INSERT INTO bestellung (BestellungID, MitarbeiterID, betrag) VALUES (?, ?, ?)";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, bestellungID);
-            statement.setInt(2, mitarbeiterId);
-            statement.setBigDecimal(3, betrag);
+            statement.setString(1, orderId);
+            statement.setInt(2, userID);
+            statement.setBigDecimal(3, amount);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public static void updateLagerBestand(Item item, int quantity) {
+    public static void updateDBItemQuantity(Item item, int quantity) {
         String sql;
-        if (item instanceof Essen) {
+        if (item instanceof Food) {
             sql = "UPDATE essen SET Anzahl = Anzahl - ? WHERE EssenID = ?";
         } else {
             sql = "UPDATE trinken SET Anzahl = Anzahl - ? WHERE TrinkenID = ?";
@@ -92,16 +91,16 @@ public class LagerDBController {
         }
     }
 
-    public static void insertItemSold(String bestellungID, Item item, int quantity) {
+    public static void insertItemSold(String orderID, Item item, int quantity) {
         String sql;
-        if (item instanceof Essen) {
+        if (item instanceof Food) {
             sql = "INSERT INTO p_essen (BestellungID, EssenID, MENGE) VALUES (?, ?, ?)";
         } else {
             sql = "INSERT INTO p_trinken (BestellungID, TrinkenID, MENGE) VALUES (?, ?, ?)";
         }
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, bestellungID);
+            statement.setString(1, orderID);
             statement.setInt(2, item.getItemID());
             statement.setInt(3, quantity);
             statement.executeUpdate();
@@ -110,11 +109,11 @@ public class LagerDBController {
         }
     }
 
-    public List<Item> getEssenList() {
-        return essenList;
+    public List<Item> getFoodList() {
+        return foodList;
     }
 
-    public List<Item> getTrinkList() {
-        return trinkList;
+    public List<Item> getDrinksList() {
+        return drinksList;
     }
 }

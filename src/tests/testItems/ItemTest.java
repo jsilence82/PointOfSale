@@ -23,27 +23,27 @@ public class ItemTest {
     @Test
     public void testGetLagerAnzahl() {
         Item item = new Item(1, "Test Item", 10, 9.99);
-        assertEquals(10, item.getLagerAnzahl());
+        assertEquals(10, item.getQuantityInDB());
     }
 
     @Test
     public void testSetLagerAnzahl() {
         Item item = new Item(1, "Test Item", 10, 9.99);
-        item.setLagerAnzahl(20);
-        assertEquals(20, item.getLagerAnzahl());
+        item.setQuantityInDB(20);
+        assertEquals(20, item.getQuantityInDB());
     }
 
     @Test
     public void testGetPreis() {
         Item item = new Item(1, "Test Item", 10, 9.99);
-        assertEquals(9.99, item.getPreis(), 0.001);
+        assertEquals(9.99, item.getPrice(), 0.001);
     }
 
     @Test
     public void testSetPreis() {
         Item item = new Item(1, "Test Item", 10, 9.99);
-        item.setPreis(19.99);
-        assertEquals(19.99, item.getPreis(), 0.001);
+        item.setPrice(19.99);
+        assertEquals(19.99, item.getPrice(), 0.001);
     }
 
     @Test

@@ -13,44 +13,44 @@ public class UserSessionController {
 
     private static final DatabaseConnection dbConnection = DatabaseConnection.getInstance();
     private static final Connection connection = dbConnection.getConnection();
-    private static User mitarbeiter;
+    private static User user;
 
-    public UserSessionController(int username, SelectScreen startProgram) {
-        mitarbeiter = User.getInstance();
-        mitarbeiter.setMitarbeiterID(username);
-        getMitarbeiterInfo(username);
+    public UserSessionController(int userID, SelectScreen startProgram) {
+        user = User.getInstance();
+        user.setUserID(userID);
+        getUserInfo(userID);
         startProgram.startScreen();
     }
 
-    private void getMitarbeiterInfo(int username) {
+    private void getUserInfo(int userID) {
         try {
             String query = "SELECT vorname, nachname FROM mitarbeiter WHERE MitarbeiterID = ?";
-            PreparedStatement stmt = connection.prepareStatement(query);
-            stmt.setInt(1, username);
-            ResultSet rs = stmt.executeQuery();
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, userID);
+            ResultSet resultSet = statement.executeQuery();
 
-            if (rs.next()) {
-                mitarbeiter.setVorname(rs.getString("vorname"));
-                mitarbeiter.setNachname(rs.getString("nachname"));
+            if (resultSet.next()) {
+                user.setFirstName(resultSet.getString("vorname"));
+                user.setLastName(resultSet.getString("nachname"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public static ResultSet getTagesBestellungen() {
+    public static ResultSet getUsersDailyOrders() {
         String sql = "SELECT BestellungID, betrag FROM bestellung WHERE MitarbeiterID=? AND Datum= CURRENT_DATE()";
 
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, mitarbeiter.getMitarbeiterID());
+            statement.setInt(1, user.getUserID());
             return statement.executeQuery();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static ResultSet getBestellungInfo(String bestellungId) {
+    public static ResultSet getOrderInfo(String orderID) {
         String sql = """
                 SELECT e.Essen as item , pe.menge, e.Preis from Essen e left join p_essen pe
                 using(EssenID)
@@ -61,23 +61,23 @@ public class UserSessionController {
                 WHERE te.BestellungID =?""";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, bestellungId);
-            statement.setString(2, bestellungId);
+            statement.setString(1, orderID);
+            statement.setString(2, orderID);
             return statement.executeQuery();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static int getMitarbeiterID() {
-        return mitarbeiter.getMitarbeiterID();
+    public static int getUserId() {
+        return user.getUserID();
     }
 
-    public static String getMitarbeiterVorname() {
-        return mitarbeiter.getVorname();
+    public static String getUserFirstName() {
+        return user.getFirstName();
     }
 
-    public static String getMitarbeiterNachname() {
-        return mitarbeiter.getNachname();
+    public static String getUserLastName() {
+        return user.getLastName();
     }
 }

@@ -16,20 +16,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-public class MitarbeiterUmatz extends JDialog {
+public class UserTotals extends JDialog {
 
-    private JTable gesamtBestellungen;
-    private DefaultTableModel model1, model2;
-    private double gesamt;
+    private JTable allDayOrders;
+    private DefaultTableModel ordersModel, detailsModel;
+    private double totalSalesEuro;
     private int totalEntries;
-    private JLabel totalBestellung;
+    private JLabel totalOrders;
 
-    public MitarbeiterUmatz(JFrame selectScreen) {
+    public UserTotals(JFrame selectScreen) {
         RoundedPanel main = new RoundedPanel();
         main.setBackground(SystemColors.BACKGROUND.getColorCode());
 
-        int mitarbeiterID = UserSessionController.getMitarbeiterID();
-        ResultSet tagesUmsatz = UserSessionController.getTagesBestellungen();
+        int mitarbeiterID = UserSessionController.getUserId();
+        ResultSet tagesUmsatz = UserSessionController.getUsersDailyOrders();
 
         selectScreen.addComponentListener(new ComponentAdapter() {
             public void componentMoved(ComponentEvent e) {
@@ -66,37 +66,37 @@ public class MitarbeiterUmatz extends JDialog {
         layeredPane.add(blurPanel, JLayeredPane.POPUP_LAYER);
 
         try {
-            model1 = new DefaultTableModel();
-            gesamtBestellungen = new JTable(model1);
-            model1.addColumn("Bestellung ID");
-            model1.addColumn("Gesamtpreis");
+            ordersModel = new DefaultTableModel();
+            allDayOrders = new JTable(ordersModel);
+            ordersModel.addColumn("Bestellung ID");
+            ordersModel.addColumn("Gesamtpreis");
 
             while (tagesUmsatz.next()) {
                 Object[] row = {tagesUmsatz.getString("BestellungID"), tagesUmsatz.getBigDecimal("betrag")};
-                gesamt += tagesUmsatz.getDouble("betrag");
-                model1.addRow(row);
+                totalSalesEuro += tagesUmsatz.getDouble("betrag");
+                ordersModel.addRow(row);
             }
 
-            model2 = new DefaultTableModel();
-            JTable bestellungDetails = new JTable(model2);
-            model2.addColumn("Waren");
-            model2.addColumn("Menge");
-            model2.addColumn("Preis");
+            detailsModel = new DefaultTableModel();
+            JTable bestellungDetails = new JTable(detailsModel);
+            detailsModel.addColumn("Waren");
+            detailsModel.addColumn("Menge");
+            detailsModel.addColumn("Preis");
 
-            gesamtBestellungen.addMouseListener(new MouseAdapter() {
+            allDayOrders.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
-                    model2.setRowCount(0);
-                    int row = gesamtBestellungen.getSelectedRow();
-                    String bestellungId = (String) model1.getValueAt(row, 0);
+                    detailsModel.setRowCount(0);
+                    int row = allDayOrders.getSelectedRow();
+                    String bestellungId = (String) ordersModel.getValueAt(row, 0);
 
-                    ResultSet bestellung = UserSessionController.getBestellungInfo(bestellungId);
+                    ResultSet bestellung = UserSessionController.getOrderInfo(bestellungId);
                     try {
                         while (bestellung.next()) {
                             Object[] row2 = {bestellung.getString("Item"), bestellung.getInt("Menge"), bestellung.getDouble("Preis")};
-                            model2.addRow(row2);
+                            detailsModel.addRow(row2);
                             totalEntries++;
                         }
-                        totalBestellung.setText("Bestellungen: " + totalEntries);
+                        totalOrders.setText("Bestellungen: " + totalEntries);
                         totalEntries = 0;
                     } catch (SQLException ex) {
                         ex.printStackTrace();
@@ -104,17 +104,17 @@ public class MitarbeiterUmatz extends JDialog {
                 }
             });
 
-            gesamtBestellungen.setBackground(SystemColors.WARENCONTAINER.getColorCode());
+            allDayOrders.setBackground(SystemColors.WARENCONTAINER.getColorCode());
             bestellungDetails.setBackground(SystemColors.WARENCONTAINER.getColorCode());
 
-            JScrollPane scrollPane1 = new JScrollPane(gesamtBestellungen);
+            JScrollPane scrollPane1 = new JScrollPane(allDayOrders);
             JScrollPane scrollPane2 = new JScrollPane(bestellungDetails);
             JPanel panel1 = new JPanel(new BorderLayout());
             panel1.setBackground(SystemColors.BACKGROUND.getColorCode());
             panel1.add(scrollPane1, BorderLayout.SOUTH);
             JLabel gesamtUmsatz = new JLabel();
             gesamtUmsatz.setFont(new Font("Simple", Font.PLAIN, 18));
-            gesamtUmsatz.setText("Gesamt: " + gesamt + "€");
+            gesamtUmsatz.setText("Gesamt: " + totalSalesEuro + "€");
             JPanel gesamtPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
             gesamtPanel.setBackground(SystemColors.BACKGROUND.getColorCode());
             gesamtPanel.add(gesamtUmsatz);
@@ -122,12 +122,12 @@ public class MitarbeiterUmatz extends JDialog {
 
             JPanel panel2 = new JPanel(new BorderLayout());
             panel2.setBackground(SystemColors.BACKGROUND.getColorCode());
-            totalBestellung = new JLabel();
-            totalBestellung.setFont(new Font("Simple", Font.PLAIN, 18));
-            totalBestellung.setText("Bestellungen: ");
+            totalOrders = new JLabel();
+            totalOrders.setFont(new Font("Simple", Font.PLAIN, 18));
+            totalOrders.setText("Bestellungen: ");
             JPanel total = new JPanel(new FlowLayout(FlowLayout.RIGHT));
             total.setBackground(SystemColors.BACKGROUND.getColorCode());
-            total.add(totalBestellung);
+            total.add(totalOrders);
             panel2.add(total, BorderLayout.NORTH);
             panel2.add(scrollPane2, BorderLayout.SOUTH);
 

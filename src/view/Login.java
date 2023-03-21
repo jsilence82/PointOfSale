@@ -16,7 +16,7 @@ import java.awt.event.ComponentEvent;
 
 public class Login extends JFrame {
 
-    private final JTextField mitarbeiterID;
+    private final JTextField userID;
     private JPasswordField passwordCheck;
 
     public Login(SelectScreen startProgram) {
@@ -44,8 +44,8 @@ public class Login extends JFrame {
 
         JLabel logo = new JLabel("");
         logo.setIcon(new ImageIcon("src\\view\\images\\raum5_2.png"));
-        mitarbeiterID = new JTextField();
-        mitarbeiterID.setColumns(5);
+        userID = new JTextField();
+        userID.setColumns(5);
         JLabel mitarbeiterLabel = new JLabel("Mitarbeiter ID:");
         JLabel passwordLabel = new JLabel("Passwort:");
 
@@ -58,19 +58,19 @@ public class Login extends JFrame {
         btnLogin.addActionListener(e -> {
             try {
                 UserDao authorize = new UserDao();
-                int username = Integer.parseInt(mitarbeiterID.getText());
+                int username = Integer.parseInt(userID.getText());
                 String password = String.valueOf(passwordCheck.getPassword());
                 if (authorize.authorizeUser(username, password)) {
                     dispose();
                     new UserSessionController(username, startProgram);
                 } else {
                     JOptionPane.showMessageDialog(this, "Username/Passwort ist falsch", "Error", JOptionPane.ERROR_MESSAGE);
-                    mitarbeiterID.setText("");
+                    userID.setText("");
                     passwordCheck.setText("");
                 }
             } catch (NumberFormatException d) {
                 JOptionPane.showMessageDialog(this, "Username ist falsch", "Error", JOptionPane.ERROR_MESSAGE);
-                mitarbeiterID.setText("");
+                userID.setText("");
                 passwordCheck.setText("");
             }
         });
@@ -88,7 +88,7 @@ public class Login extends JFrame {
         btnReset.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         btnReset.setOpaque(false);
         btnReset.addActionListener(e -> {
-            mitarbeiterID.setText("");
+            userID.setText("");
             passwordCheck.setText("");
         });
 
@@ -123,7 +123,7 @@ public class Login extends JFrame {
                                                 .addComponent(btnLogin, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(ComponentPlacement.RELATED)
                                                 .addComponent(btnReset, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(mitarbeiterID, GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                                        .addComponent(userID, GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
                                         .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
                                                 .addComponent(passwordLabel)
                                                 .addComponent(passwordCheck, GroupLayout.PREFERRED_SIZE, 160, GroupLayout.PREFERRED_SIZE))
@@ -151,7 +151,7 @@ public class Login extends JFrame {
                                 .addPreferredGap(ComponentPlacement.RELATED)
                                 .addComponent(mitarbeiterLabel)
                                 .addPreferredGap(ComponentPlacement.RELATED)
-                                .addComponent(mitarbeiterID, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(userID, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(ComponentPlacement.UNRELATED)
                                 .addComponent(passwordLabel)
                                 .addGap(3)

@@ -4,14 +4,14 @@ public class Item implements Comparable<Item> {
 
     private int itemID;
     private String description;
-    private int lagerAnzahl;
-    private double preis;
+    private int quantityInDB;
+    private double price;
 
     public Item(int itemID,String description, int lagerAnzahl, double preis) {
         this.itemID = itemID;
         this.description = description;
-        this.lagerAnzahl = lagerAnzahl;
-        this.preis = preis;
+        this.quantityInDB = lagerAnzahl;
+        this.price = preis;
     }
 
     public String getDescription() {
@@ -22,20 +22,20 @@ public class Item implements Comparable<Item> {
         this.description = description;
     }
 
-    public int getLagerAnzahl() {
-        return lagerAnzahl;
+    public int getQuantityInDB() {
+        return quantityInDB;
     }
 
-    public void setLagerAnzahl(int lagerAnzahl) {
-        this.lagerAnzahl = lagerAnzahl;
+    public void setQuantityInDB(int quantityInDB) {
+        this.quantityInDB = quantityInDB;
     }
 
-    public double getPreis() {
-        return preis;
+    public double getPrice() {
+        return price;
     }
 
-    public void setPreis(double preis) {
-        this.preis = preis;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public int getItemID() {

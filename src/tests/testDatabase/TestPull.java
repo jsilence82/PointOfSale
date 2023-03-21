@@ -1,21 +1,21 @@
 package tests.testDatabase;
 
-import controller.LagerDBController;
+import controller.ItemsDBController;
 import model.items.Item;
 
 import java.util.List;
 
 public class TestPull {
     public static void main(String[] args) {
-        LagerDBController pull = new LagerDBController();
-        List<Item> foods = pull.getEssenList();
+        ItemsDBController pull = new ItemsDBController();
+        List<Item> foods = pull.getFoodList();
         for(Item food : foods){
-            System.out.println(food.getItemID() + " " + food.getDescription() + " " + food.getPreis() + " " + food.getLagerAnzahl());
+            System.out.println(food.getItemID() + " " + food.getDescription() + " " + food.getPrice() + " " + food.getQuantityInDB());
         }
 
-        List<Item> drinks = pull.getTrinkList();
+        List<Item> drinks = pull.getDrinksList();
         for(Item drink : drinks){
-            System.out.println(drink.getItemID() + " " + drink.getDescription() + " " + drink.getPreis() + " " + drink.getLagerAnzahl());
+            System.out.println(drink.getItemID() + " " + drink.getDescription() + " " + drink.getPrice() + " " + drink.getQuantityInDB());
         }
     }
 }

@@ -1,9 +1,8 @@
 package model;
 
-import controller.LagerDBController;
+import controller.ItemsDBController;
 import controller.UserSessionController;
 import model.items.Item;
-import view.SelectScreen;
 
 import javax.swing.*;
 import java.math.BigDecimal;
@@ -13,21 +12,22 @@ import java.util.*;
 
 public class ShoppingCart {
 
-    private final SelectScreen screen;
     private final HashMap<Item, Integer> cart;
     private final NumberFormat euroFormat;
-    private final String bestellungID;
-    private final int mitarbeiterID;
+    private final String orderId;
+    private final int userID;
 
-    public ShoppingCart(SelectScreen screen) {
-        this.screen = screen;
+    public ShoppingCart() {
         cart = new HashMap<>();
         euroFormat = NumberFormat.getCurrencyInstance(Locale.GERMANY);
-        bestellungID = generateBestellungID();
-        mitarbeiterID = UserSessionController.getMitarbeiterID();
+        orderId = generateOrderID();
+       // For Unit tests
+       // userID = 1;
+        userID = UserSessionController.getUserId();
+       // Comment out UserSessionController
     }
 
-    private String generateBestellungID() {
+    private String generateOrderID() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMddHHmm");
         Random random = new Random();
         Date now = new Date();
@@ -41,24 +41,22 @@ public class ShoppingCart {
             if (cart.containsKey(item)) {
                 int currentAmount = cart.get(item);
                 int newAmount = currentAmount + amount;
-                if (newAmount > item.getLagerAnzahl()) {
+                if (newAmount > item.getQuantityInDB()) {
                     throw new IllegalArgumentException();
                 } else {
                     cart.put(item, newAmount);
                 }
             } else {
-                if (amount > item.getLagerAnzahl()) {
+                if (amount > item.getQuantityInDB()) {
                     throw new IllegalArgumentException();
                 } else {
                     cart.put(item, amount);
                 }
             }
-            screen.addToTally();
         } catch (IllegalArgumentException e) {
             JOptionPane.showMessageDialog(null, "Die Menge übersteigt den Bestand!");
         }
     }
-
 
     public void removeItem(Item item) {
         if (cart.get(item) == 1) {
@@ -66,7 +64,6 @@ public class ShoppingCart {
         } else {
             cart.put(item, cart.get(item) - 1);
         }
-        screen.addToTally();
     }
 
     public void clearCart() {
@@ -85,24 +82,24 @@ public class ShoppingCart {
         double total = 0.00;
         for (Map.Entry<Item, Integer> entry : cart.entrySet()) {
             Item item = entry.getKey();
-            double price = item.getPreis();
+            double price = item.getPrice();
             total += (price * entry.getValue());
         }
         return total;
     }
 
-    public void buchungSchliessen() {
-        LagerDBController.insertBestellung(bestellungID, mitarbeiterID, BigDecimal.valueOf(getTotal()));
+    public void completeOrder() {
+        ItemsDBController.insertOrder(orderId, userID, BigDecimal.valueOf(getTotal()));
         for (Map.Entry<Item, Integer> entry : cart.entrySet()) {
             Item item = entry.getKey();
             int quantity = entry.getValue();
-            LagerDBController.insertItemSold(bestellungID, item, quantity);
-            LagerDBController.updateLagerBestand(item, quantity);
+            ItemsDBController.insertItemSold(orderId, item, quantity);
+            ItemsDBController.updateDBItemQuantity(item, quantity);
         }
         clearCart();
     }
 
-    public String getBestellungID() {
-        return bestellungID;
+    public String getOrderId() {
+        return orderId;
     }
 }

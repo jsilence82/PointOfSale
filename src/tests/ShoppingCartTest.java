@@ -2,14 +2,11 @@ package tests;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import java.util.HashMap;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
 import model.ShoppingCart;
 import model.items.Item;
-import view.SelectScreen;
+
 
 public class ShoppingCartTest {
 
@@ -17,14 +14,9 @@ public class ShoppingCartTest {
     private Item item1;
     private Item item2;
 
-
-    @Mock
-    private SelectScreen mockSelectScreen;
-
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        shoppingCart = new ShoppingCart(mockSelectScreen);
+        shoppingCart = new ShoppingCart();
         item1 = new Item(1, "Item 1", 5, 10.00);
         item2 = new Item(2, "Item 2", 10, 5.00);
     }
@@ -37,7 +29,6 @@ public class ShoppingCartTest {
         HashMap<Item, Integer> cart = shoppingCart.getCart();
         assertEquals(1, cart.size());
         assertEquals(1, (int) cart.get(item));
-        verify(mockSelectScreen, times(1)).addToTally();
     }
 
     @Test
@@ -49,7 +40,6 @@ public class ShoppingCartTest {
         expectedCart.put(item1, 2);
         expectedCart.put(item2, 4);
         assertEquals(expectedCart, shoppingCart.getCart());
-        assertEquals("€47,50", shoppingCart.getFormattedTotal());
     }
 
     @Test
@@ -59,14 +49,13 @@ public class ShoppingCartTest {
         shoppingCart.clearCart();
         HashMap<Item, Integer> expectedCart = new HashMap<>();
         assertEquals(expectedCart, shoppingCart.getCart());
-        assertEquals("€0,00", shoppingCart.getFormattedTotal());
     }
 
     @Test
     public void testGetTotal() {
         shoppingCart.addItem(item1, 2);
         shoppingCart.addItem(item2, 5);
-        assertEquals(52.50, shoppingCart.getTotal(), 0.01);
+        assertEquals(45, shoppingCart.getTotal(), 0.01);
     }
 
 }

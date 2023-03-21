@@ -9,7 +9,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import controller.LagerDBController;
+import controller.ItemsDBController;
 import controller.UserSessionController;
 import model.ShoppingCart;
 import model.items.Item;
@@ -30,13 +30,12 @@ public class SelectScreen extends JFrame {
 
     private final PanelFadeTransition contentPane;
     private final RoundedButton logout;
-    private JPanel korbPanel;
-    private RoundedPanel mitarbeiterPanel;
+    private JPanel cartPanel;
+    private RoundedPanel userInfoPanel;
     private JPanel centerButtonPanel;
     private JPanel tally;
     private JLabel cartTotal;
-    private LagerDBController menu;
-
+    private ItemsDBController menu;
     private List<Item> foodList;
     private List<Item> drinkList;
     private ShoppingCart shoppingCart;
@@ -54,6 +53,11 @@ public class SelectScreen extends JFrame {
         JPanel screenPane = new JPanel(new BorderLayout());
         screenPane.setBackground(SystemColors.BACKGROUND.getColorCode());
         setContentPane(screenPane);
+
+        contentPane = new PanelFadeTransition();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        contentPane.setLayout(new GridBagLayout());
+        screenPane.add(contentPane, BorderLayout.CENTER);
 
         JPanel titlePanel = new JPanel(new BorderLayout());
         titlePanel.setBackground(SystemColors.BACKGROUND.getColorCode());
@@ -90,10 +94,6 @@ public class SelectScreen extends JFrame {
         logoPanel.add(logo);
         screenPane.add(logoPanel, BorderLayout.SOUTH);
 
-        contentPane = new PanelFadeTransition();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        contentPane.setLayout(new GridBagLayout());
-
         JSeparator horizontalSeparator_east = new JSeparator(JSeparator.HORIZONTAL);
         horizontalSeparator_east.setForeground(SystemColors.BACKGROUND.getColorCode());
         horizontalSeparator_east.setBackground(SystemColors.BACKGROUND.getColorCode());
@@ -106,20 +106,110 @@ public class SelectScreen extends JFrame {
         horizontalSeparator_west.setPreferredSize(new Dimension(20, 500));
         screenPane.add(horizontalSeparator_west, BorderLayout.WEST);
 
-        screenPane.add(contentPane, BorderLayout.CENTER);
+
         setVisible(true);
     }
 
     public void startScreen() {
-        menu = new LagerDBController();
-        foodList = menu.getEssenList();
-        drinkList = menu.getTrinkList();
-        shoppingCart = new ShoppingCart(this);
+        menu = new ItemsDBController();
+        foodList = menu.getFoodList();
+        drinkList = menu.getDrinksList();
+        shoppingCart = new ShoppingCart();
         euroFormat = NumberFormat.getCurrencyInstance(Locale.GERMANY);
         initializeScreen();
         contentPane.fade(!contentPane.isVisible());
     }
 
+    private void viewUserTotals() {
+        new UserTotals(this);
+    }
+
+    private void logout() {
+        if (shoppingCart.getCart().isEmpty()) {
+            dispose();
+        } else {
+            int confirmed = JOptionPane.showConfirmDialog(this,
+                    "Warenkorb ist nicht leer. Wirklich ausloggen?", "Item in Warenkorb",
+                    JOptionPane.YES_NO_OPTION);
+            if (confirmed == JOptionPane.YES_OPTION) {
+                dispose();
+            }
+        }
+    }
+
+    public void addToTally() {
+        tally.removeAll();
+        HashMap<Item, Integer> cart = shoppingCart.getCart();
+        for (Map.Entry<Item, Integer> entry : cart.entrySet()) {
+            Item item = entry.getKey();
+            Integer quantity = entry.getValue();
+            JPanel rowPanel = new JPanel(new GridLayout(1, 3, 40, 20));
+            rowPanel.setBackground(SystemColors.BLACKBG.getColorCode());
+            JLabel quantityLabel = new JLabel(quantity + "x");
+            quantityLabel.setForeground(Color.WHITE);
+            quantityLabel.setPreferredSize(new Dimension(5, 20));
+            JLabel desc = new JLabel(item.getDescription());
+            desc.setForeground(Color.WHITE);
+            desc.setPreferredSize(new Dimension(75, 20));
+            JLabel price = new JLabel(euroFormat.format(item.getPrice() * quantity));
+            price.setForeground(Color.WHITE);
+            price.setPreferredSize(new Dimension(5, 20));
+            JButton delete = new RoundedButton("X");
+            delete.setBackground(SystemColors.XBUTTON.getColorCode());
+            delete.setForeground(Color.WHITE);
+            delete.setPreferredSize(new Dimension(3, 5));
+            delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            delete.setOpaque(false);
+            delete.addActionListener(e -> {
+                shoppingCart.removeItem(item);
+                addToTally();
+            });
+
+            rowPanel.add(quantityLabel);
+            rowPanel.add(desc);
+            rowPanel.add(price);
+            rowPanel.add(delete);
+            tally.add(rowPanel);
+        }
+        tally.revalidate();
+        tally.repaint();
+        updateTotals();
+    }
+
+    private void updateTotals() {
+        cartTotal.setText(shoppingCart.getFormattedTotal());
+    }
+
+    private void resetCart() {
+        if (!shoppingCart.getCart().isEmpty()) {
+            shoppingCart.clearCart();
+            updateScreen();
+        }
+    }
+
+    private void updateScreen() {
+        this.shoppingCart = new ShoppingCart();
+        contentPane.removeAll();
+        contentPane.revalidate();
+        foodList.clear();
+        drinkList.clear();
+        menu.refreshDatabase();
+        foodList = menu.getFoodList();
+        drinkList = menu.getDrinksList();
+        contentPane.repaint();
+        initializeScreen();
+    }
+
+    private void getPaymentProcessor() {
+		/*
+		Methode zum Zahlungsabwickler, die hier hinzugefügt werden muss.
+		 */
+        JOptionPane.showMessageDialog(null, "Temp: Zahlungsabwickler Menu", "Bestellung bestätigt", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /* ----------------------------------------------------------------
+    GUI LAYOUT AND FORMATTING
+     ----------------------------------------------------------------- */
     public void initializeScreen() {
         logout.setVisible(true);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -127,26 +217,26 @@ public class SelectScreen extends JFrame {
         gbc.weightx = 1.0;
         gbc.weighty = 0.5;
 
-        RoundedPanel warenPanel = new RoundedPanel(new GridLayout(1, 2), 25);
-        warenPanel.setBackground(SystemColors.WARENCONTAINER.getColorCode());
-        warenPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        warenPanel.setOpaque(false);
+        RoundedPanel menuPanel = new RoundedPanel(new GridLayout(1, 2), 25);
+        menuPanel.setBackground(SystemColors.WARENCONTAINER.getColorCode());
+        menuPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        menuPanel.setOpaque(false);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.gridheight = 1;
 
-        JPanel essenPanel = new JPanel();
-        essenPanel.setLayout(new GridLayout(foodList.size() + 1, 4));
-        formatWarenPanels(essenPanel, foodList, "Speise");
-        warenPanel.add(essenPanel);
+        JPanel foodPanel = new JPanel();
+        foodPanel.setLayout(new GridLayout(foodList.size() + 1, 4));
+        formatMenuPanel(foodPanel, foodList, "Speise");
+        menuPanel.add(foodPanel);
 
-        JPanel trinkenPanel = new JPanel();
-        trinkenPanel.setLayout(new GridLayout(drinkList.size() + 1, 4));
-        formatWarenPanels(trinkenPanel, drinkList, "Getränke");
-        warenPanel.add(trinkenPanel);
-        contentPane.add(warenPanel, gbc);
+        JPanel drinkPanel = new JPanel();
+        drinkPanel.setLayout(new GridLayout(drinkList.size() + 1, 4));
+        formatMenuPanel(drinkPanel, drinkList, "Getränke");
+        menuPanel.add(drinkPanel);
+        contentPane.add(menuPanel, gbc);
 
         JPanel verticalBlankPanel = new JPanel();
         gbc.gridx = 0;
@@ -168,28 +258,27 @@ public class SelectScreen extends JFrame {
         gbc.ipady = 0;
 
         bottomContentRow.setBackground(SystemColors.BACKGROUND.getColorCode());
-        korbPanel = new JPanel();
-        formatWarenKorbPanel();
-        bottomContentRow.add(korbPanel);
+        cartPanel = new JPanel();
+        formatCartPanel();
+        bottomContentRow.add(cartPanel);
 
         centerButtonPanel = new JPanel();
         formatCenterButtonPanel();
         bottomContentRow.add(centerButtonPanel);
 
-        JPanel mitarbeiterContainer = new JPanel(new BorderLayout());
-        mitarbeiterContainer.setBackground(SystemColors.BACKGROUND.getColorCode());
+        JPanel userContainer = new JPanel(new BorderLayout());
+        userContainer.setBackground(SystemColors.BACKGROUND.getColorCode());
 
-        mitarbeiterPanel = new RoundedPanel(new BorderLayout(), 20);
-        mitarbeiterPanel.setOpaque(false);
-        mitarbeiterPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        formatMitarbeiterPanel();
-        mitarbeiterContainer.add(mitarbeiterPanel, BorderLayout.CENTER);
-        bottomContentRow.add(mitarbeiterContainer);
+        userInfoPanel = new RoundedPanel(new BorderLayout(), 20);
+        userInfoPanel.setOpaque(false);
+        userInfoPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        formatUserInfoPanel();
+        userContainer.add(userInfoPanel, BorderLayout.CENTER);
+        bottomContentRow.add(userContainer);
         contentPane.add(bottomContentRow, gbc);
     }
 
-
-    private void formatWarenPanels(JPanel panel, List<Item> itemsList, String panelTitle) {
+    private void formatMenuPanel(JPanel panel, List<Item> itemsList, String panelTitle) {
         int paddingSize = 20;
         Border emptyBorder = BorderFactory.createEmptyBorder(paddingSize, paddingSize, paddingSize, paddingSize);
         TitledBorder titledBorder = BorderFactory.createTitledBorder(emptyBorder, panelTitle,
@@ -262,36 +351,35 @@ public class SelectScreen extends JFrame {
         for (Item item : items) {
             JPanel rowPanel = new JPanel(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
-
             rowPanel.setBackground(SystemColors.WARENCONTAINER.getColorCode());
 
-            JPanel lagerPanel = new JPanel(new BorderLayout());
-            lagerPanel.setBackground(SystemColors.WARENCONTAINER.getColorCode());
-            JTextPane lager = new JTextPane();
-            lager.setText(String.valueOf(item.getLagerAnzahl()));
-            lager.setForeground(getLagerColor(item.getLagerAnzahl()));
-            lager.setBackground(SystemColors.BLACKBG.getColorCode());
-            lager.setFont(new Font("Simple", Font.PLAIN, 13));
-            lager.setPreferredSize(new Dimension(30, 20));
-            StyledDocument style = lager.getStyledDocument();
+            JPanel inStockPanel = new JPanel(new BorderLayout());
+            inStockPanel.setBackground(SystemColors.WARENCONTAINER.getColorCode());
+            JTextPane inStock = new JTextPane();
+            inStock.setText(String.valueOf(item.getQuantityInDB()));
+            inStock.setForeground(getInStockColor(item.getQuantityInDB()));
+            inStock.setBackground(SystemColors.BLACKBG.getColorCode());
+            inStock.setFont(new Font("Simple", Font.PLAIN, 13));
+            inStock.setPreferredSize(new Dimension(30, 20));
+            StyledDocument style = inStock.getStyledDocument();
 
             SimpleAttributeSet center = new SimpleAttributeSet();
             StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
             style.setParagraphAttributes(0, style.getLength(), center, false);
 
-            lager.setEditable(false);
-            lager.setFocusable(false);
+            inStock.setEditable(false);
+            inStock.setFocusable(false);
             JPanel blankPanel = new JPanel();
             blankPanel.setBackground(SystemColors.WARENCONTAINER.getColorCode());
-            lagerPanel.add(lager, BorderLayout.WEST);
-            lagerPanel.add(blankPanel, BorderLayout.EAST);
+            inStockPanel.add(inStock, BorderLayout.WEST);
+            inStockPanel.add(blankPanel, BorderLayout.EAST);
 
 
             JLabel label = new JLabel(item.getDescription());
-            JLabel price = new JLabel(euroFormat.format(item.getPreis()));
+            JLabel price = new JLabel(euroFormat.format(item.getPrice()));
             JComboBox<Integer> quantity = new JComboBox<>(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
             quantity.setSelectedIndex(0);
-            JButton button = new RoundedButton("Hinzufugen");
+            JButton button = new RoundedButton("Hinzufügen");
             button.setOpaque(false);
             button.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             button.setBackground(SystemColors.BUTTONS.getColorCode());
@@ -299,6 +387,7 @@ public class SelectScreen extends JFrame {
             button.addActionListener(e -> {
                 int amountOrdered = (int) quantity.getSelectedItem();
                 shoppingCart.addItem(item, amountOrdered);
+                addToTally();
             });
 
             gbc.insets = new Insets(5, 5, 5, 5);
@@ -307,8 +396,8 @@ public class SelectScreen extends JFrame {
             gbc.fill = GridBagConstraints.HORIZONTAL;
             gbc.ipadx = 5;
             gbc.ipady = 5;
-            lagerPanel.setPreferredSize(new Dimension(40, 20));
-            rowPanel.add(lagerPanel, gbc);
+            inStockPanel.setPreferredSize(new Dimension(40, 20));
+            rowPanel.add(inStockPanel, gbc);
 
             gbc.gridx = 1;
             gbc.weightx = 0.6;
@@ -334,7 +423,7 @@ public class SelectScreen extends JFrame {
         }
     }
 
-    private Color getLagerColor(int amount) {
+    private Color getInStockColor(int amount) {
         if (amount > 10) {
             return Color.GREEN;
         } else if (amount >= 5) {
@@ -344,34 +433,33 @@ public class SelectScreen extends JFrame {
         }
     }
 
-
-    private void formatWarenKorbPanel() {
-        korbPanel.setLayout(new BorderLayout());
-        korbPanel.setBackground(SystemColors.BACKGROUND.getColorCode());
-        JLabel korbLabel = new JLabel("Warenkorb");
-        korbLabel.setFont(new Font("Simple", Font.PLAIN, 22));
-        korbLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        korbPanel.add(korbLabel, BorderLayout.NORTH);
+    private void formatCartPanel() {
+        cartPanel.setLayout(new BorderLayout());
+        cartPanel.setBackground(SystemColors.BACKGROUND.getColorCode());
+        JLabel cartLabel = new JLabel("Warenkorb");
+        cartLabel.setFont(new Font("Simple", Font.PLAIN, 22));
+        cartLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        cartPanel.add(cartLabel, BorderLayout.NORTH);
 
         tally = new JPanel();
         tally.setPreferredSize(new Dimension(400, 300));
         tally.setBackground(SystemColors.SCHRIFTDUNKEL.getColorCode());
         JScrollPane cartPanel = new JScrollPane(tally);
         cartPanel.setBackground(SystemColors.SCHRIFTDUNKEL.getColorCode());
-        korbPanel.add(cartPanel, BorderLayout.CENTER);
+        this.cartPanel.add(cartPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new BorderLayout());
         buttonPanel.setBackground(SystemColors.BACKGROUND.getColorCode());
-        JButton kassieren = new RoundedButton("Kassieren");
-        kassieren.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        kassieren.setOpaque(false);
+        JButton sellButton = new RoundedButton("Kassieren");
+        sellButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        sellButton.setOpaque(false);
 
-        kassieren.setBackground(SystemColors.BUTTONS.getColorCode());
-        kassieren.setForeground(SystemColors.SCHRIFTHELL.getColorCode());
+        sellButton.setBackground(SystemColors.BUTTONS.getColorCode());
+        sellButton.setForeground(SystemColors.SCHRIFTHELL.getColorCode());
 
-        kassieren.addActionListener(e -> {
+        sellButton.addActionListener(e -> {
             if (!shoppingCart.getCart().isEmpty()) {
-                shoppingCart.buchungSchliessen();
+                shoppingCart.completeOrder();
                 getPaymentProcessor();
                 updateScreen();
             } else {
@@ -393,9 +481,9 @@ public class SelectScreen extends JFrame {
         cartTotal.setFont(new Font("Simple", Font.PLAIN, 22));
         totalArea.add(totalLabel, BorderLayout.NORTH);
         totalArea.add(cartTotal);
-        buttonPanel.add(kassieren, BorderLayout.WEST);
+        buttonPanel.add(sellButton, BorderLayout.WEST);
         buttonPanel.add(totalArea, BorderLayout.EAST);
-        korbPanel.add(buttonPanel, BorderLayout.SOUTH);
+        this.cartPanel.add(buttonPanel, BorderLayout.SOUTH);
     }
 
     private void formatCenterButtonPanel() {
@@ -414,12 +502,12 @@ public class SelectScreen extends JFrame {
         resetButton.setBackground(SystemColors.XBUTTON.getColorCode());
         resetButton.addActionListener(e -> resetCart());
 
-        RoundedButton kasse = new RoundedButton("Kasse");
-        kasse.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        kasse.setOpaque(false);
-        kasse.setForeground(SystemColors.SCHRIFTHELL.getColorCode());
-        kasse.setBackground(SystemColors.BUTTONS.getColorCode());
-        kasse.addActionListener(e -> cashout());
+        RoundedButton userTotalButton = new RoundedButton("Kasse");
+        userTotalButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        userTotalButton.setOpaque(false);
+        userTotalButton.setForeground(SystemColors.SCHRIFTHELL.getColorCode());
+        userTotalButton.setBackground(SystemColors.BUTTONS.getColorCode());
+        userTotalButton.addActionListener(e -> viewUserTotals());
 
         for (int i = 0; i <= 3; i++) {
             JPanel cellPanel = new JPanel();
@@ -429,69 +517,9 @@ public class SelectScreen extends JFrame {
                 cellPanel.add(resetButton);
             }
             if (i == 3) {
-                cellPanel.add(kasse);
+                cellPanel.add(userTotalButton);
             }
         }
-    }
-
-    private void cashout() {
-
-        new MitarbeiterUmatz(this);
-    }
-
-    private void logout() {
-        if (shoppingCart.getCart().isEmpty()) {
-            dispose();
-        } else {
-            int confirmed = JOptionPane.showConfirmDialog(this,
-                    "Warenkorb ist nicht leer. Wirklich ausloggen?", "Item in Warenkorb",
-                    JOptionPane.YES_NO_OPTION);
-            if (confirmed == JOptionPane.YES_OPTION) {
-                dispose();
-            }
-        }
-    }
-
-
-    private void formatMitarbeiterPanel() {
-        mitarbeiterPanel.setBackground(SystemColors.BUTTONS.getColorCode());
-
-        JPanel center = new JPanel(new GridLayout(8, 1));
-        center.setBackground(SystemColors.BUTTONS.getColorCode());
-
-        JLabel date = getLabelFormat("Datum");
-        RoundedPanel datePanel = getRoundedPanel();
-        JLabel datePrint = getInfoBoxFormat();
-        datePrint.setText(String.valueOf(LocalDate.now()));
-        datePanel.add(datePrint);
-
-        JLabel bestellIDLabel = getLabelFormat("Bestellungs ID");
-        RoundedPanel bestellungPanel = getRoundedPanel();
-        JLabel bestellungsID = getInfoBoxFormat();
-        bestellungsID.setText(String.valueOf(shoppingCart.getBestellungID()));
-        bestellungPanel.add(bestellungsID);
-
-        JLabel mitarbeiterIdLabel = getLabelFormat("Kassenpersonal ID");
-        JLabel mitarbeitID = getInfoBoxFormat();
-        mitarbeitID.setText(String.valueOf(UserSessionController.getMitarbeiterID()));
-        RoundedPanel mitarbeitIDPanel = getRoundedPanel();
-        mitarbeitIDPanel.add(mitarbeitID);
-
-        JLabel nameLabel = getLabelFormat("Name");
-        JLabel mitarbeiterName = getInfoBoxFormat();
-        mitarbeiterName.setText(UserSessionController.getMitarbeiterVorname() + " " + UserSessionController.getMitarbeiterNachname());
-        RoundedPanel namePanel = getRoundedPanel();
-        namePanel.add(mitarbeiterName);
-
-        center.add(date);
-        center.add(datePanel);
-        center.add(bestellIDLabel);
-        center.add(bestellungPanel);
-        center.add(mitarbeiterIdLabel);
-        center.add(mitarbeitIDPanel);
-        center.add(nameLabel);
-        center.add(namePanel);
-        mitarbeiterPanel.add(center, BorderLayout.CENTER);
     }
 
     private JLabel getLabelFormat(String title) {
@@ -517,69 +545,44 @@ public class SelectScreen extends JFrame {
         return panel;
     }
 
-    public void addToTally() {
-        tally.removeAll();
-        HashMap<Item, Integer> cart = shoppingCart.getCart();
-        for (Map.Entry<Item, Integer> entry : cart.entrySet()) {
-            Item item = entry.getKey();
-            Integer quantity = entry.getValue();
-            JPanel rowPanel = new JPanel(new GridLayout(1, 3, 40, 20));
-            rowPanel.setBackground(SystemColors.BLACKBG.getColorCode());
-            JLabel anzahl = new JLabel(quantity + "x");
-            anzahl.setForeground(Color.WHITE);
-            anzahl.setPreferredSize(new Dimension(5, 20));
-            JLabel desc = new JLabel(item.getDescription());
-            desc.setForeground(Color.WHITE);
-            desc.setPreferredSize(new Dimension(75, 20));
-            JLabel price = new JLabel(euroFormat.format(item.getPreis() * quantity));
-            price.setForeground(Color.WHITE);
-            price.setPreferredSize(new Dimension(5, 20));
-            JButton delete = new RoundedButton("X");
-            delete.setBackground(SystemColors.XBUTTON.getColorCode());
-            delete.setForeground(Color.WHITE);
-            delete.setPreferredSize(new Dimension(3, 5));
-            delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-            delete.setOpaque(false);
-            delete.addActionListener(e -> shoppingCart.removeItem(item));
-            rowPanel.add(anzahl);
-            rowPanel.add(desc);
-            rowPanel.add(price);
-            rowPanel.add(delete);
-            tally.add(rowPanel);
-        }
-        tally.revalidate();
-        tally.repaint();
-        updateGesamt();
-    }
+    private void formatUserInfoPanel() {
+        userInfoPanel.setBackground(SystemColors.BUTTONS.getColorCode());
 
-    private void updateGesamt() {
-        cartTotal.setText(shoppingCart.getFormattedTotal());
-    }
+        JPanel center = new JPanel(new GridLayout(8, 1));
+        center.setBackground(SystemColors.BUTTONS.getColorCode());
 
-    private void resetCart() {
-        if (!shoppingCart.getCart().isEmpty()) {
-            shoppingCart.clearCart();
-            updateScreen();
-        }
-    }
+        JLabel date = getLabelFormat("Datum");
+        RoundedPanel datePanel = getRoundedPanel();
+        JLabel datePrint = getInfoBoxFormat();
+        datePrint.setText(String.valueOf(LocalDate.now()));
+        datePanel.add(datePrint);
 
-    private void updateScreen() {
-        this.shoppingCart = new ShoppingCart(this);
-        contentPane.removeAll();
-        contentPane.revalidate();
-        foodList.clear();
-        drinkList.clear();
-        menu.refreshDatabase();
-        foodList = menu.getEssenList();
-        drinkList = menu.getTrinkList();
-        contentPane.repaint();
-        initializeScreen();
-    }
+        JLabel orderIdLabel = getLabelFormat("Bestellung ID");
+        RoundedPanel bestellungPanel = getRoundedPanel();
+        JLabel orderId = getInfoBoxFormat();
+        orderId.setText(String.valueOf(shoppingCart.getOrderId()));
+        bestellungPanel.add(orderId);
 
-    private void getPaymentProcessor() {
-		/*
-		Methode zum Zahlungsabwickler, die hier hinzugefügt werden muss.
-		 */
-        JOptionPane.showMessageDialog(null, "Temp: Zahlungsabwickler Menu", "Bestellung bestätigt", JOptionPane.INFORMATION_MESSAGE);
+        JLabel userIDLabel = getLabelFormat("Kassenpersonal ID");
+        JLabel userId = getInfoBoxFormat();
+        userId.setText(String.valueOf(UserSessionController.getUserId()));
+        RoundedPanel mitarbeitIDPanel = getRoundedPanel();
+        mitarbeitIDPanel.add(userId);
+
+        JLabel nameLabel = getLabelFormat("Name");
+        JLabel userName = getInfoBoxFormat();
+        userName.setText(UserSessionController.getUserFirstName() + " " + UserSessionController.getUserLastName());
+        RoundedPanel namePanel = getRoundedPanel();
+        namePanel.add(userName);
+
+        center.add(date);
+        center.add(datePanel);
+        center.add(orderIdLabel);
+        center.add(bestellungPanel);
+        center.add(userIDLabel);
+        center.add(mitarbeitIDPanel);
+        center.add(nameLabel);
+        center.add(namePanel);
+        userInfoPanel.add(center, BorderLayout.CENTER);
     }
 }

@@ -3,9 +3,9 @@ package model;
 public class User {
 
     private static User instance;
-    private int mitarbeiterID;
-    private String vorname;
-    private String nachname;
+    private int userID;
+    private String firstName;
+    private String lastName;
 
     private User() {}
 
@@ -16,28 +16,28 @@ public class User {
         return instance;
     }
 
-    public int getMitarbeiterID() {
-        return mitarbeiterID;
+    public int getUserID() {
+        return userID;
     }
 
-    public void setMitarbeiterID(int mitarbeiterID) {
-        this.mitarbeiterID = mitarbeiterID;
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 
-    public String getVorname() {
-        return vorname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setVorname(String vorname) {
-        this.vorname = vorname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getNachname() {
-        return nachname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setNachname(String nachname) {
-        this.nachname = nachname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }
 
