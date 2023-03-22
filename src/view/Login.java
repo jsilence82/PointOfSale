@@ -29,7 +29,7 @@ public class Login extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
         setAlwaysOnTop(true);
-        setBounds(100, 100, 520, 320);
+        setBounds(0, 0, 520, 320);
         setLocationRelativeTo(startProgram);
 
         RoundedPanel contentPane = new RoundedPanel();
@@ -37,10 +37,6 @@ public class Login extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setOpaque(false);
         setContentPane(contentPane);
-
-        RoundedPanel mainPanel = new RoundedPanel();
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
-        mainPanel.setOpaque(false);
 
         JLabel logo = new JLabel("");
         logo.setIcon(new ImageIcon("src\\view\\images\\raum5_2.png"));
@@ -120,18 +116,18 @@ public class Login extends JFrame {
                                 .addGap(178)
                                 .addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
                                         .addGroup(gl_contentPane.createSequentialGroup()
+                                                .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+                                                        .addComponent(mitarbeiterLabel)
+                                                        .addComponent(loginLabel))
+                                                .addPreferredGap(ComponentPlacement.RELATED))
+                                        .addGroup(gl_contentPane.createSequentialGroup()
                                                 .addComponent(btnLogin, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(ComponentPlacement.RELATED)
                                                 .addComponent(btnReset, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE))
                                         .addComponent(userID, GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
                                         .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
                                                 .addComponent(passwordLabel)
-                                                .addComponent(passwordCheck, GroupLayout.PREFERRED_SIZE, 160, GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(gl_contentPane.createSequentialGroup()
-                                                .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-                                                        .addComponent(mitarbeiterLabel)
-                                                        .addComponent(loginLabel))
-                                                .addPreferredGap(ComponentPlacement.RELATED)))
+                                                .addComponent(passwordCheck, GroupLayout.PREFERRED_SIZE, 160, GroupLayout.PREFERRED_SIZE)))
                                 .addGap(176))
                         .addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
                                 .addContainerGap(427, Short.MAX_VALUE)

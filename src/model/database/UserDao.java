@@ -33,7 +33,7 @@ public class UserDao {
 
     public static String hashPassword(String password){
         Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
-        return argon2.hash(4, 1024, 1, password.getBytes());
+        return argon2.hash(3, 720, 1, password.getBytes());
     }
 
     public static void closeConnection(){

@@ -30,5 +30,14 @@ public class UserDaoTest {
     public void testAuthenticateUserFailure() {
         assertFalse(userDao.authorizeUser(5, "5"));
     }
+
+    @Test
+    public void testSQLInjection() {
+        int MALICIOUS_INPUT = 1;
+        String SQL_QUERY = "SELECT * FROM users WHERE username = 1 AND password = 123";
+        assertFalse(userDao.authorizeUser(MALICIOUS_INPUT, SQL_QUERY));
+    }
 }
+
+
 

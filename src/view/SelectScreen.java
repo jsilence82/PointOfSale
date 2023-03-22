@@ -361,19 +361,17 @@ public class SelectScreen extends JFrame {
             inStock.setBackground(SystemColors.BLACKBG.getColorCode());
             inStock.setFont(new Font("Simple", Font.PLAIN, 13));
             inStock.setPreferredSize(new Dimension(30, 20));
+            inStock.setEditable(false);
+            inStock.setFocusable(false);
             StyledDocument style = inStock.getStyledDocument();
-
             SimpleAttributeSet center = new SimpleAttributeSet();
             StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
             style.setParagraphAttributes(0, style.getLength(), center, false);
 
-            inStock.setEditable(false);
-            inStock.setFocusable(false);
             JPanel blankPanel = new JPanel();
             blankPanel.setBackground(SystemColors.WARENCONTAINER.getColorCode());
             inStockPanel.add(inStock, BorderLayout.WEST);
             inStockPanel.add(blankPanel, BorderLayout.EAST);
-
 
             JLabel label = new JLabel(item.getDescription());
             JLabel price = new JLabel(euroFormat.format(item.getPrice()));
