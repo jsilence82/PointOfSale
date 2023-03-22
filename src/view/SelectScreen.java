@@ -47,7 +47,7 @@ public class SelectScreen extends JFrame {
         int width = (int) (screenSize.width * 0.5);
         int height = (int) (screenSize.height * 0.5);
         getContentPane().setPreferredSize(new Dimension(width, height));
-        setBounds(100, 100, 1600, 1000);
+        setBounds(100, 100, 1680, 1000);
         setUndecorated(true);
 
         JPanel screenPane = new JPanel(new BorderLayout());

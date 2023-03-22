@@ -8,8 +8,6 @@ import view.custom.SystemColors;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -27,23 +25,30 @@ public class Login extends JFrame {
         });
         setUndecorated(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
         setAlwaysOnTop(true);
-        setBounds(0, 0, 520, 320);
+        setBounds(0, 0, 480, 360);
         setLocationRelativeTo(startProgram);
 
         RoundedPanel contentPane = new RoundedPanel();
         contentPane.setBackground(SystemColors.BACKGROUND.getColorCode());
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setOpaque(false);
+        contentPane.setLayout(new BorderLayout());
         setContentPane(contentPane);
 
         JLabel logo = new JLabel("");
         logo.setIcon(new ImageIcon("src\\view\\images\\raum5_2.png"));
+        logo.setHorizontalAlignment(JLabel.RIGHT);
         userID = new JTextField();
         userID.setColumns(5);
+        userID.setHorizontalAlignment(SwingConstants.CENTER);
+        userID.setFont(new Font("Tahoma", Font.PLAIN, 16));
         JLabel mitarbeiterLabel = new JLabel("Mitarbeiter ID:");
+        mitarbeiterLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        mitarbeiterLabel.setFont(new Font("Tahoma", Font.PLAIN,20));
         JLabel passwordLabel = new JLabel("Passwort:");
+        passwordLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        passwordLabel.setFont(new Font("Tahoma", Font.PLAIN, 20));
 
         JButton btnLogin = new RoundedButton("Login");
         btnLogin.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -75,10 +80,13 @@ public class Login extends JFrame {
         cafeteriaLabel.setFont(new Font("Candara", Font.BOLD, 30));
 
         JLabel loginLabel = new JLabel("Login");
-        loginLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+        loginLabel.setFont(new Font("Tahoma", Font.BOLD, 24));
+        loginLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         passwordCheck = new JPasswordField();
         passwordCheck.setColumns(5);
+        passwordCheck.setHorizontalAlignment(SwingConstants.CENTER);
+        passwordCheck.setFont(new Font("Arial", Font.PLAIN, 16));
 
         JButton btnReset = new RoundedButton("Reset");
         btnReset.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -99,68 +107,60 @@ public class Login extends JFrame {
         btnExit.setFont(new Font("Tahoma", Font.BOLD, 12));
         btnExit.setBackground(SystemColors.XBUTTON.getColorCode());
 
-
         btnReset.setForeground(Color.WHITE);
         btnReset.setFont(new Font("Tahoma", Font.BOLD, 12));
         btnReset.setBackground(SystemColors.BUTTONS.getColorCode());
 
-        GroupLayout gl_contentPane = new GroupLayout(contentPane);
-        gl_contentPane.setHorizontalGroup(
-                gl_contentPane.createParallelGroup(Alignment.LEADING)
-                        .addGroup(gl_contentPane.createSequentialGroup()
-                                .addGap(25)
-                                .addComponent(cafeteriaLabel, GroupLayout.PREFERRED_SIZE, 194, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
-                                .addComponent(logo))
-                        .addGroup(gl_contentPane.createSequentialGroup()
-                                .addGap(178)
-                                .addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
-                                        .addGroup(gl_contentPane.createSequentialGroup()
-                                                .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-                                                        .addComponent(mitarbeiterLabel)
-                                                        .addComponent(loginLabel))
-                                                .addPreferredGap(ComponentPlacement.RELATED))
-                                        .addGroup(gl_contentPane.createSequentialGroup()
-                                                .addComponent(btnLogin, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(ComponentPlacement.RELATED)
-                                                .addComponent(btnReset, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(userID, GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
-                                        .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-                                                .addComponent(passwordLabel)
-                                                .addComponent(passwordCheck, GroupLayout.PREFERRED_SIZE, 160, GroupLayout.PREFERRED_SIZE)))
-                                .addGap(176))
-                        .addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
-                                .addContainerGap(427, Short.MAX_VALUE)
-                                .addComponent(btnExit, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap())
-        );
-        gl_contentPane.setVerticalGroup(
-                gl_contentPane.createParallelGroup(Alignment.LEADING)
-                        .addGroup(gl_contentPane.createSequentialGroup()
-                                .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-                                        .addComponent(logo)
-                                        .addGroup(gl_contentPane.createSequentialGroup()
-                                                .addGap(19)
-                                                .addComponent(cafeteriaLabel)))
-                                .addGap(18)
-                                .addComponent(loginLabel)
-                                .addPreferredGap(ComponentPlacement.RELATED)
-                                .addComponent(mitarbeiterLabel)
-                                .addPreferredGap(ComponentPlacement.RELATED)
-                                .addComponent(userID, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(ComponentPlacement.UNRELATED)
-                                .addComponent(passwordLabel)
-                                .addGap(3)
-                                .addComponent(passwordCheck, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-                                .addGap(18)
-                                .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-                                        .addComponent(btnLogin, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(btnReset, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
-                                .addComponent(btnExit, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap())
-        );
-        contentPane.setLayout(gl_contentPane);
+        JPanel titlePanel = new JPanel(new GridLayout(1,2));
+        titlePanel.setBackground(SystemColors.BACKGROUND.getColorCode());
+        titlePanel.add(cafeteriaLabel, 0);
+        titlePanel.add(logo, 1);
+        contentPane.add(titlePanel, BorderLayout.NORTH);
+
+        JPanel blankEasePanel = new JPanel();
+        blankEasePanel.setBackground(SystemColors.BACKGROUND.getColorCode());
+        blankEasePanel.setPreferredSize(new Dimension(20,0));
+        contentPane.add(blankEasePanel, BorderLayout.EAST);
+
+        JPanel blankWest = new JPanel();
+        blankWest.setBackground(SystemColors.BACKGROUND.getColorCode());
+        blankWest.setPreferredSize(new Dimension(20,0));
+        contentPane.add(blankWest, BorderLayout.WEST);
+
+        JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        southPanel.setBackground(SystemColors.BACKGROUND.getColorCode());
+        southPanel.add(btnExit);
+        contentPane.add(southPanel, BorderLayout.SOUTH);
+
+        JPanel centerContentPanel = new JPanel(new BorderLayout());
+        centerContentPanel.setBackground(SystemColors.BACKGROUND.getColorCode());
+        centerContentPanel.add(loginLabel, BorderLayout.NORTH);
+
+        JPanel inputFields = new JPanel(new GridLayout(4,1));
+        inputFields.setBackground(SystemColors.BACKGROUND.getColorCode());
+        inputFields.add(mitarbeiterLabel, 0);
+
+        JPanel userInputPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        userInputPanel.setBackground(SystemColors.BACKGROUND.getColorCode());
+        userInputPanel.add(userID);
+        inputFields.add(userInputPanel, 1);
+        inputFields.add(passwordLabel, 2);
+
+        JPanel passwordInputPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        passwordInputPanel.setBackground(SystemColors.BACKGROUND.getColorCode());
+        passwordInputPanel.add(passwordCheck);
+        inputFields.add(passwordInputPanel, 3);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.setBackground(SystemColors.BACKGROUND.getColorCode());
+        buttonPanel.setPreferredSize(new Dimension(50,50));
+        buttonPanel.add(btnLogin);
+        buttonPanel.add(btnReset);
+        centerContentPanel.add(buttonPanel, BorderLayout.SOUTH);
+        centerContentPanel.add(inputFields, BorderLayout.CENTER);
+        contentPane.add(centerContentPanel, BorderLayout.CENTER);
+
         contentPane.getRootPane().setDefaultButton(btnLogin);
+        setVisible(true);
     }
 }

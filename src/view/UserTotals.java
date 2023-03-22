@@ -14,7 +14,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.util.Locale;
 
 public class UserTotals extends JDialog {
 
@@ -23,10 +25,12 @@ public class UserTotals extends JDialog {
     private double totalSalesEuro;
     private int totalEntries;
     private JLabel totalOrders;
+    private final NumberFormat numberFormat;
 
     public UserTotals(JFrame selectScreen) {
         RoundedPanel main = new RoundedPanel();
         main.setBackground(SystemColors.BACKGROUND.getColorCode());
+        numberFormat = NumberFormat.getCurrencyInstance(Locale.GERMANY);
 
         int mitarbeiterID = UserSessionController.getUserId();
         ResultSet tagesUmsatz = UserSessionController.getUsersDailyOrders();
@@ -72,7 +76,7 @@ public class UserTotals extends JDialog {
             ordersModel.addColumn("Gesamtpreis");
 
             while (tagesUmsatz.next()) {
-                Object[] row = {tagesUmsatz.getString("BestellungID"), tagesUmsatz.getBigDecimal("betrag")};
+                Object[] row = {tagesUmsatz.getString("BestellungID"), numberFormat.format(tagesUmsatz.getBigDecimal("betrag"))};
                 totalSalesEuro += tagesUmsatz.getDouble("betrag");
                 ordersModel.addRow(row);
             }
@@ -92,7 +96,7 @@ public class UserTotals extends JDialog {
                     ResultSet bestellung = UserSessionController.getOrderInfo(bestellungId);
                     try {
                         while (bestellung.next()) {
-                            Object[] row2 = {bestellung.getString("Item"), bestellung.getInt("Menge"), bestellung.getDouble("Preis")};
+                            Object[] row2 = {bestellung.getString("Item"), bestellung.getInt("Menge"), numberFormat.format(bestellung.getBigDecimal("Preis"))};
                             detailsModel.addRow(row2);
                             totalEntries++;
                         }
@@ -114,7 +118,7 @@ public class UserTotals extends JDialog {
             panel1.add(scrollPane1, BorderLayout.SOUTH);
             JLabel gesamtUmsatz = new JLabel();
             gesamtUmsatz.setFont(new Font("Simple", Font.PLAIN, 18));
-            gesamtUmsatz.setText("Gesamt: " + totalSalesEuro + "€");
+            gesamtUmsatz.setText("Gesamt: " + numberFormat.format(totalSalesEuro));
             JPanel gesamtPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
             gesamtPanel.setBackground(SystemColors.BACKGROUND.getColorCode());
             gesamtPanel.add(gesamtUmsatz);

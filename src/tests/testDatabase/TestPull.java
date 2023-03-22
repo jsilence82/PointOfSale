@@ -2,11 +2,13 @@ package tests.testDatabase;
 
 import controller.ItemsDBController;
 import model.items.Item;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 public class TestPull {
-    public static void main(String[] args) {
+    @Test
+    public void main() {
         ItemsDBController pull = new ItemsDBController();
         List<Item> foods = pull.getFoodList();
         for(Item food : foods){
