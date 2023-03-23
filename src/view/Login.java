@@ -26,7 +26,7 @@ public class Login extends JFrame {
         setUndecorated(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setAlwaysOnTop(true);
-        setBounds(0, 0, 480, 360);
+       setBounds(0, 0, 480, 380);
         setLocationRelativeTo(startProgram);
 
         RoundedPanel contentPane = new RoundedPanel();
@@ -76,8 +76,8 @@ public class Login extends JFrame {
             }
         });
 
-        JLabel cafeteriaLabel = new JLabel("Cafeteria 123");
-        cafeteriaLabel.setFont(new Font("Candara", Font.BOLD, 30));
+        JLabel cafeteriaLabel = new JLabel();
+        cafeteriaLabel.setIcon(new ImageIcon("src\\view\\images\\Cafeteria-logo_kl.png"));
 
         JLabel loginLabel = new JLabel("Login");
         loginLabel.setFont(new Font("Tahoma", Font.BOLD, 24));

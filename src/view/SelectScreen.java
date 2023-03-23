@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-
 public class SelectScreen extends JFrame {
 
     private final PanelFadeTransition contentPane;
@@ -43,12 +42,10 @@ public class SelectScreen extends JFrame {
 
     public SelectScreen() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = (int) (screenSize.width * 0.5);
-        int height = (int) (screenSize.height * 0.5);
-        getContentPane().setPreferredSize(new Dimension(width, height));
-        setBounds(100, 100, 1680, 1000);
-        setUndecorated(true);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setBounds(100, 100, 1680, 1080);
+        //setUndecorated(true);
+        setResizable(true);
 
         JPanel screenPane = new JPanel(new BorderLayout());
         screenPane.setBackground(SystemColors.BACKGROUND.getColorCode());
@@ -59,17 +56,13 @@ public class SelectScreen extends JFrame {
         contentPane.setLayout(new GridBagLayout());
         screenPane.add(contentPane, BorderLayout.CENTER);
 
-        JPanel titlePanel = new JPanel(new BorderLayout());
+        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         titlePanel.setBackground(SystemColors.BACKGROUND.getColorCode());
-        JLabel title = new JLabel("Cafeteria 123");
-        title.setFont(new Font("Candara", Font.BOLD, 30));
-        JPanel labelTitlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        labelTitlePanel.setBackground(SystemColors.BACKGROUND.getColorCode());
-        labelTitlePanel.add(title);
+        titlePanel.setPreferredSize(new Dimension(100,50));
         JSeparator titleSeparator = new JSeparator(JSeparator.VERTICAL);
         titleSeparator.setForeground(SystemColors.BACKGROUND.getColorCode());
         titleSeparator.setBackground(SystemColors.BACKGROUND.getColorCode());
-        titleSeparator.setPreferredSize(new Dimension(1, 50));
+        titleSeparator.setPreferredSize(new Dimension(1, 15));
 
         logout = new RoundedButton("Ausloggen");
         logout.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -81,10 +74,7 @@ public class SelectScreen extends JFrame {
         JPanel logoutPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         logoutPanel.setBackground(SystemColors.BACKGROUND.getColorCode());
         logoutPanel.add(logout);
-
-        titlePanel.add(labelTitlePanel, BorderLayout.CENTER);
         titlePanel.add(logoutPanel, BorderLayout.EAST);
-        titlePanel.add(titleSeparator, BorderLayout.NORTH);
         screenPane.add(titlePanel, BorderLayout.NORTH);
 
         JPanel logoPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -105,7 +95,6 @@ public class SelectScreen extends JFrame {
         horizontalSeparator_west.setBackground(SystemColors.BACKGROUND.getColorCode());
         horizontalSeparator_west.setPreferredSize(new Dimension(20, 500));
         screenPane.add(horizontalSeparator_west, BorderLayout.WEST);
-
 
         setVisible(true);
     }
@@ -143,7 +132,7 @@ public class SelectScreen extends JFrame {
         for (Map.Entry<Item, Integer> entry : cart.entrySet()) {
             Item item = entry.getKey();
             Integer quantity = entry.getValue();
-            JPanel rowPanel = new JPanel(new GridLayout(1, 3, 40, 20));
+            JPanel rowPanel = new JPanel(new GridLayout(1, 3, 50, 10));
             rowPanel.setBackground(SystemColors.BLACKBG.getColorCode());
             JLabel quantityLabel = new JLabel(quantity + "x");
             quantityLabel.setForeground(Color.WHITE);
@@ -215,60 +204,73 @@ public class SelectScreen extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
-        gbc.weighty = 0.5;
-
-        RoundedPanel menuPanel = new RoundedPanel(new GridLayout(1, 2), 25);
-        menuPanel.setBackground(SystemColors.WARENCONTAINER.getColorCode());
-        menuPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        menuPanel.setOpaque(false);
-
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.gridheight = GridBagConstraints.RELATIVE;
+        gbc.weighty = 2.0;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.gridheight = 1;
+
+        JPanel menuPanel = new RoundedPanel(new GridLayout(1, 2), 10);
+        menuPanel.setBackground(SystemColors.WARENCONTAINER.getColorCode());
+        menuPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        menuPanel.setMinimumSize(new Dimension(1000, 450));
+        menuPanel.setOpaque(false);
+
 
         JPanel foodPanel = new JPanel();
-        foodPanel.setLayout(new GridLayout(foodList.size() + 1, 4));
+        foodPanel.setLayout(new BoxLayout(foodPanel, BoxLayout.Y_AXIS));
         formatMenuPanel(foodPanel, foodList, "Speise");
         menuPanel.add(foodPanel);
 
         JPanel drinkPanel = new JPanel();
-        drinkPanel.setLayout(new GridLayout(drinkList.size() + 1, 4));
+        drinkPanel.setLayout(new BoxLayout(drinkPanel, BoxLayout.Y_AXIS));
         formatMenuPanel(drinkPanel, drinkList, "Getränke");
         menuPanel.add(drinkPanel);
         contentPane.add(menuPanel, gbc);
 
-        JPanel verticalBlankPanel = new JPanel();
+        RoundedPanel verticalBlankPanel = new RoundedPanel(new FlowLayout(FlowLayout.CENTER));
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.gridheight = 1;
-        gbc.weighty = 0.0;
-        gbc.ipady = 50;
+        gbc.weighty = 1.0;
 
         verticalBlankPanel.setBackground(SystemColors.BACKGROUND.getColorCode());
+        Box verticalox = Box.createVerticalBox();
+        verticalox.add(Box.createVerticalStrut(100));
+        verticalBlankPanel.add(verticalox);
         contentPane.add(verticalBlankPanel, gbc);
 
-        JPanel bottomContentRow = new JPanel(new GridLayout(1, 3));
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.gridheight = 1;
-        gbc.weighty = 0.5;
-        gbc.ipady = 0;
 
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.gridheight = GridBagConstraints.REMAINDER;
+        gbc.weighty = 0.0;
+        gbc.weightx = 0.0;
+
+        JPanel bottomContentRow = new JPanel(new GridLayout(1, 3));
         bottomContentRow.setBackground(SystemColors.BACKGROUND.getColorCode());
         cartPanel = new JPanel();
         formatCartPanel();
-        bottomContentRow.add(cartPanel);
+        JPanel cartContiner = new JPanel(new BorderLayout());
+        cartContiner.setBackground(SystemColors.BACKGROUND.getColorCode());
+        cartContiner.add(Box.createVerticalStrut(30), BorderLayout.NORTH);
+        cartContiner.add(cartPanel, BorderLayout.CENTER);
+        bottomContentRow.add(cartContiner);
 
         centerButtonPanel = new JPanel();
         formatCenterButtonPanel();
-        bottomContentRow.add(centerButtonPanel);
+        JPanel centerContainer = new JPanel(new BorderLayout());
+        centerContainer.setBackground(SystemColors.BACKGROUND.getColorCode());
+        centerContainer.add(Box.createVerticalStrut(35), BorderLayout.NORTH);
+        centerContainer.add(centerButtonPanel, BorderLayout.CENTER);
+        bottomContentRow.add(centerContainer);
 
         JPanel userContainer = new JPanel(new BorderLayout());
         userContainer.setBackground(SystemColors.BACKGROUND.getColorCode());
 
+        userContainer.add(Box.createVerticalStrut(30), BorderLayout.NORTH);
         userInfoPanel = new RoundedPanel(new BorderLayout(), 20);
         userInfoPanel.setOpaque(false);
         userInfoPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -342,12 +344,18 @@ public class SelectScreen extends JFrame {
         addToCart.setPreferredSize(new Dimension(75, 20));
         tilePanel.add(addToCart, gbc);
 
-        panel.add(tilePanel);
+        panel.add(tilePanel, BorderLayout.NORTH);
     }
 
 
     private void fillItemRows(JPanel panel, List<Item> items) {
         fillTitleBar(panel);
+        JPanel entries = new JPanel(new GridLayout(items.size(), 4));
+
+        JScrollPane scrollPane = new JScrollPane(entries, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setPreferredSize(new Dimension(0, 600));
+
+        panel.add(scrollPane, BorderLayout.CENTER);
         for (Item item : items) {
             JPanel rowPanel = new JPanel(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
@@ -359,7 +367,7 @@ public class SelectScreen extends JFrame {
             inStock.setText(String.valueOf(item.getQuantityInDB()));
             inStock.setForeground(getInStockColor(item.getQuantityInDB()));
             inStock.setBackground(SystemColors.BLACKBG.getColorCode());
-            inStock.setFont(new Font("Simple", Font.PLAIN, 13));
+            inStock.setFont(new Font("Simple", Font.PLAIN, 16));
             inStock.setPreferredSize(new Dimension(30, 20));
             inStock.setEditable(false);
             inStock.setFocusable(false);
@@ -374,7 +382,9 @@ public class SelectScreen extends JFrame {
             inStockPanel.add(blankPanel, BorderLayout.EAST);
 
             JLabel label = new JLabel(item.getDescription());
+            label.setFont(new Font("Candera", Font.BOLD, 16));
             JLabel price = new JLabel(euroFormat.format(item.getPrice()));
+            price.setFont(new Font("Candera", Font.BOLD, 16));
             JComboBox<Integer> quantity = new JComboBox<>(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
             quantity.setSelectedIndex(0);
             JButton button = new RoundedButton("Hinzufügen");
@@ -417,7 +427,7 @@ public class SelectScreen extends JFrame {
             button.setPreferredSize(new Dimension(75, 20));
             rowPanel.add(button, gbc);
 
-            panel.add(rowPanel);
+            entries.add(rowPanel);
         }
     }
 
@@ -440,9 +450,10 @@ public class SelectScreen extends JFrame {
         cartPanel.add(cartLabel, BorderLayout.NORTH);
 
         tally = new JPanel();
-        tally.setPreferredSize(new Dimension(400, 300));
+        tally.setPreferredSize(new Dimension(100, 300));
         tally.setBackground(SystemColors.SCHRIFTDUNKEL.getColorCode());
         JScrollPane cartPanel = new JScrollPane(tally);
+        cartPanel.setPreferredSize(new Dimension(100, 300));
         cartPanel.setBackground(SystemColors.SCHRIFTDUNKEL.getColorCode());
         this.cartPanel.add(cartPanel, BorderLayout.CENTER);
 
@@ -473,7 +484,6 @@ public class SelectScreen extends JFrame {
 
         cartTotal = new JLabel();
         cartTotal.setHorizontalAlignment(SwingConstants.RIGHT);
-        cartTotal.setPreferredSize(new Dimension(125, 25));
         cartTotal.setForeground(Color.BLACK);
         cartTotal.setText("0,00€");
         cartTotal.setFont(new Font("Simple", Font.PLAIN, 22));
@@ -491,7 +501,7 @@ public class SelectScreen extends JFrame {
 
         centerButtonPanel.setLayout(new BorderLayout());
         centerButtonPanel.setBackground(SystemColors.BACKGROUND.getColorCode());
-        centerButtonPanel.add(buttons, BorderLayout.CENTER);
+        centerButtonPanel.add(buttons, BorderLayout.NORTH);
 
         RoundedButton resetButton = new RoundedButton("Zurücksetzen");
         resetButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -499,6 +509,12 @@ public class SelectScreen extends JFrame {
         resetButton.setForeground(SystemColors.SCHRIFTDUNKEL.getColorCode());
         resetButton.setBackground(SystemColors.XBUTTON.getColorCode());
         resetButton.addActionListener(e -> resetCart());
+
+        JLabel cafeLogo = new JLabel();
+        cafeLogo.setIcon(new ImageIcon("src\\view\\images\\Cafeteria-logo.png"));
+        cafeLogo.setHorizontalAlignment(SwingConstants.CENTER);
+        cafeLogo.setVerticalAlignment(SwingConstants.CENTER);
+        centerButtonPanel.add(cafeLogo, BorderLayout.CENTER);
 
         RoundedButton userTotalButton = new RoundedButton("Kasse");
         userTotalButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
