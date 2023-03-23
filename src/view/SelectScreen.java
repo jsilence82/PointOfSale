@@ -42,10 +42,11 @@ public class SelectScreen extends JFrame {
 
     public SelectScreen() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setBounds(100, 100, 1680, 1080);
-        //setUndecorated(true);
+        // setUndecorated(true);
+        // setExtendedState(JFrame.MAXIMIZED_BOTH);
         setResizable(true);
+        setLocationRelativeTo(null);
 
         JPanel screenPane = new JPanel(new BorderLayout());
         screenPane.setBackground(SystemColors.BACKGROUND.getColorCode());
@@ -58,7 +59,7 @@ public class SelectScreen extends JFrame {
 
         JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         titlePanel.setBackground(SystemColors.BACKGROUND.getColorCode());
-        titlePanel.setPreferredSize(new Dimension(100,50));
+        titlePanel.setPreferredSize(new Dimension(100, 50));
         JSeparator titleSeparator = new JSeparator(JSeparator.VERTICAL);
         titleSeparator.setForeground(SystemColors.BACKGROUND.getColorCode());
         titleSeparator.setBackground(SystemColors.BACKGROUND.getColorCode());
@@ -132,19 +133,21 @@ public class SelectScreen extends JFrame {
         for (Map.Entry<Item, Integer> entry : cart.entrySet()) {
             Item item = entry.getKey();
             Integer quantity = entry.getValue();
-            JPanel rowPanel = new JPanel(new GridLayout(1, 3, 50, 10));
+            JPanel rowPanel = new JPanel(new GridLayout(1, 3, 75, 10));
             rowPanel.setBackground(SystemColors.BLACKBG.getColorCode());
             JLabel quantityLabel = new JLabel(quantity + "x");
             quantityLabel.setForeground(Color.WHITE);
-            quantityLabel.setPreferredSize(new Dimension(5, 20));
+            quantityLabel.setPreferredSize(new Dimension(20, 20));
+            quantityLabel.setHorizontalAlignment(SwingConstants.LEFT);
             JLabel desc = new JLabel(item.getDescription());
             desc.setForeground(Color.WHITE);
             desc.setPreferredSize(new Dimension(75, 20));
             JLabel price = new JLabel(euroFormat.format(item.getPrice() * quantity));
             price.setForeground(Color.WHITE);
-            price.setPreferredSize(new Dimension(5, 20));
+            price.setPreferredSize(new Dimension(20, 20));
             JButton delete = new RoundedButton("X");
             delete.setBackground(SystemColors.XBUTTON.getColorCode());
+            delete.setHorizontalAlignment(SwingConstants.RIGHT);
             delete.setForeground(Color.WHITE);
             delete.setPreferredSize(new Dimension(3, 5));
             delete.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -228,22 +231,8 @@ public class SelectScreen extends JFrame {
         menuPanel.add(drinkPanel);
         contentPane.add(menuPanel, gbc);
 
-        RoundedPanel verticalBlankPanel = new RoundedPanel(new FlowLayout(FlowLayout.CENTER));
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.gridheight = 1;
-        gbc.weighty = 1.0;
-
-        verticalBlankPanel.setBackground(SystemColors.BACKGROUND.getColorCode());
-        Box verticalox = Box.createVerticalBox();
-        verticalox.add(Box.createVerticalStrut(100));
-        verticalBlankPanel.add(verticalox);
-        contentPane.add(verticalBlankPanel, gbc);
-
-
-        gbc.gridx = 0;
-        gbc.gridy = 3;
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.gridheight = GridBagConstraints.REMAINDER;
         gbc.weighty = 0.0;
@@ -253,11 +242,11 @@ public class SelectScreen extends JFrame {
         bottomContentRow.setBackground(SystemColors.BACKGROUND.getColorCode());
         cartPanel = new JPanel();
         formatCartPanel();
-        JPanel cartContiner = new JPanel(new BorderLayout());
-        cartContiner.setBackground(SystemColors.BACKGROUND.getColorCode());
-        cartContiner.add(Box.createVerticalStrut(30), BorderLayout.NORTH);
-        cartContiner.add(cartPanel, BorderLayout.CENTER);
-        bottomContentRow.add(cartContiner);
+        JPanel cartContainer = new JPanel(new BorderLayout());
+        cartContainer.setBackground(SystemColors.BACKGROUND.getColorCode());
+        cartContainer.add(Box.createVerticalStrut(30), BorderLayout.NORTH);
+        cartContainer.add(cartPanel, BorderLayout.CENTER);
+        bottomContentRow.add(cartContainer);
 
         centerButtonPanel = new JPanel();
         formatCenterButtonPanel();
@@ -306,6 +295,7 @@ public class SelectScreen extends JFrame {
         gbc.weightx = 0.2;
         gbc.insets = new Insets(0, 0, 0, 5);
         JLabel lager = new JLabel("Best.");
+        lager.setFont(new Font("Candera", Font.BOLD, 16));
         lager.setPreferredSize(new Dimension(40, 20));
         tilePanel.add(lager, gbc);
 
@@ -315,6 +305,7 @@ public class SelectScreen extends JFrame {
         gbc.weightx = 0.7;
         gbc.insets = new Insets(0, 0, 0, 5);
         JLabel label = new JLabel("Produkt");
+        label.setFont(new Font("Candera", Font.BOLD, 16));
         label.setPreferredSize(new Dimension(75, 20));
         tilePanel.add(label, gbc);
 
@@ -324,6 +315,7 @@ public class SelectScreen extends JFrame {
         gbc.weightx = 0.1;
         gbc.insets = new Insets(0, 0, 0, 5);
         JLabel price = new JLabel("Preis");
+        price.setFont(new Font("Candera", Font.BOLD, 16));
         price.setPreferredSize(new Dimension(50, 20));
         tilePanel.add(price, gbc);
 
@@ -333,7 +325,8 @@ public class SelectScreen extends JFrame {
         gbc.weightx = 0.1;
         gbc.insets = new Insets(0, 0, 0, 5);
         JLabel quantity = new JLabel("Menge");
-        quantity.setPreferredSize(new Dimension(50, 20));
+        quantity.setFont(new Font("Candera", Font.BOLD, 16));
+        quantity.setPreferredSize(new Dimension(55, 20));
         tilePanel.add(quantity, gbc);
 
         gbc.gridx = 4;
@@ -341,6 +334,7 @@ public class SelectScreen extends JFrame {
         gbc.gridwidth = 1;
         gbc.weightx = 0.2;
         JLabel addToCart = new JLabel("Warenkorb");
+        addToCart.setFont(new Font("Candera", Font.BOLD, 16));
         addToCart.setPreferredSize(new Dimension(75, 20));
         tilePanel.add(addToCart, gbc);
 
@@ -452,10 +446,9 @@ public class SelectScreen extends JFrame {
         tally = new JPanel();
         tally.setPreferredSize(new Dimension(100, 300));
         tally.setBackground(SystemColors.SCHRIFTDUNKEL.getColorCode());
-        JScrollPane cartPanel = new JScrollPane(tally);
-        cartPanel.setPreferredSize(new Dimension(100, 300));
-        cartPanel.setBackground(SystemColors.SCHRIFTDUNKEL.getColorCode());
-        this.cartPanel.add(cartPanel, BorderLayout.CENTER);
+        JScrollPane cartScroll = new JScrollPane(tally, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        cartScroll.setBackground(SystemColors.SCHRIFTDUNKEL.getColorCode());
+        cartPanel.add(cartScroll, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new BorderLayout());
         buttonPanel.setBackground(SystemColors.BACKGROUND.getColorCode());

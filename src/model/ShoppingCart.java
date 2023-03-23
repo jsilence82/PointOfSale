@@ -21,7 +21,7 @@ public class ShoppingCart {
         cart = new HashMap<>();
         euroFormat = NumberFormat.getCurrencyInstance(Locale.GERMANY);
         orderId = generateOrderID();
-       // For Unit tests
+       // For Unit tests:
        // userID = 1;
         userID = UserSessionController.getUserId();
        // Comment out UserSessionController

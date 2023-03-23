@@ -26,7 +26,7 @@ public class Login extends JFrame {
         setUndecorated(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setAlwaysOnTop(true);
-       setBounds(0, 0, 480, 380);
+        setBounds(0, 0, 480, 380);
         setLocationRelativeTo(startProgram);
 
         RoundedPanel contentPane = new RoundedPanel();
