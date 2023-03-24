@@ -11,7 +11,7 @@ import javax.swing.text.StyledDocument;
 
 import controller.ItemsDBController;
 import controller.UserSessionController;
-import model.ShoppingCart;
+import controller.ShoppingCart;
 import model.items.Item;
 import view.custom.PanelFadeTransition;
 import view.custom.RoundedButton;

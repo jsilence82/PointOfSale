@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import java.util.HashMap;
 import static org.junit.Assert.assertEquals;
-import model.ShoppingCart;
+import controller.ShoppingCart;
 import model.items.Item;
 
 
