@@ -43,7 +43,7 @@ public class UserTotals extends JDialog {
         setUndecorated(true);
         JPanel titleBar = new JPanel();
         titleBar.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        JLabel titleLabel = new JLabel("Tageusumsatz");
+        JLabel titleLabel = new JLabel("Tagesumsatz");
         titleBar.add(titleLabel);
         getContentPane().add(titleBar, BorderLayout.NORTH);
         getContentPane().setBackground(SystemColors.BACKGROUND.getColorCode());
@@ -137,7 +137,7 @@ public class UserTotals extends JDialog {
 
             JPanel panel3 = new JPanel();
             panel3.setBackground(SystemColors.BACKGROUND.getColorCode());
-            JLabel label = new JLabel("Tageusmsatz für Mitarbeiter " + mitarbeiterID + " am " + LocalDate.now());
+            JLabel label = new JLabel("Tagesumsatz für Mitarbeiter " + mitarbeiterID + " am " + LocalDate.now());
             label.setFont(new Font("Simple", Font.BOLD, 30));
             panel3.add(label);
             RoundedButton close = new RoundedButton("Close");
@@ -164,6 +164,5 @@ public class UserTotals extends JDialog {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-
     }
 }

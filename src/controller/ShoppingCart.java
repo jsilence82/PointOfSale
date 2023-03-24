@@ -1,7 +1,5 @@
 package controller;
 
-import controller.ItemsDBController;
-import controller.UserSessionController;
 import model.items.Item;
 
 import javax.swing.*;
