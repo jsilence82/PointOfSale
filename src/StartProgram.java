@@ -1,10 +1,11 @@
 import view.Login;
 import view.SelectScreen;
+import view.custom.BlankBackground;
 
-import java.io.IOException;
 
 public class StartProgram {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args)  {
+        new BlankBackground();
         SelectScreen startProgram = new SelectScreen();
         new Login(startProgram);
         while (true) {
