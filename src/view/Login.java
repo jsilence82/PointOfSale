@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.IOException;
 
 public class Login extends JFrame {
 
@@ -37,7 +38,7 @@ public class Login extends JFrame {
         setContentPane(contentPane);
 
         JLabel logo = new JLabel("");
-        logo.setIcon(new ImageIcon("src\\view\\images\\raum5_2.png"));
+        logo.setIcon(new ImageIcon("resources/raum5_2.png"));
         logo.setHorizontalAlignment(JLabel.RIGHT);
         userID = new JTextField();
         userID.setColumns(5);
@@ -69,7 +70,7 @@ public class Login extends JFrame {
                     userID.setText("");
                     passwordCheck.setText("");
                 }
-            } catch (NumberFormatException d) {
+            } catch (NumberFormatException | IOException d) {
                 JOptionPane.showMessageDialog(this, "Username ist falsch", "Error", JOptionPane.ERROR_MESSAGE);
                 userID.setText("");
                 passwordCheck.setText("");
@@ -77,7 +78,7 @@ public class Login extends JFrame {
         });
 
         JLabel cafeteriaLabel = new JLabel();
-        cafeteriaLabel.setIcon(new ImageIcon("src\\view\\images\\Cafeteria-logo_kl.png"));
+        cafeteriaLabel.setIcon(new ImageIcon("resources/Cafeteria-logo_kl.png"));
 
         JLabel loginLabel = new JLabel("Login");
         loginLabel.setFont(new Font("Tahoma", Font.BOLD, 24));

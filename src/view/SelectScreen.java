@@ -43,8 +43,8 @@ public class SelectScreen extends JFrame {
     public SelectScreen() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 1680, 1080);
-        // setUndecorated(true);
-        // setExtendedState(JFrame.MAXIMIZED_BOTH);
+         setUndecorated(true);
+         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setResizable(true);
         setLocationRelativeTo(null);
 
@@ -81,7 +81,7 @@ public class SelectScreen extends JFrame {
         JPanel logoPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         logoPanel.setBackground(SystemColors.BACKGROUND.getColorCode());
         JLabel logo = new JLabel("");
-        logo.setIcon(new ImageIcon("src\\view\\images\\raum5_2.png"));
+        logo.setIcon(new ImageIcon("resources/raum5_2.png"));
         logoPanel.add(logo);
         screenPane.add(logoPanel, BorderLayout.SOUTH);
 
@@ -504,7 +504,7 @@ public class SelectScreen extends JFrame {
         resetButton.addActionListener(e -> resetCart());
 
         JLabel cafeLogo = new JLabel();
-        cafeLogo.setIcon(new ImageIcon("src\\view\\images\\Cafeteria-logo.png"));
+        cafeLogo.setIcon(new ImageIcon("resources/Cafeteria-logo.png"));
         cafeLogo.setHorizontalAlignment(SwingConstants.CENTER);
         cafeLogo.setVerticalAlignment(SwingConstants.CENTER);
         centerButtonPanel.add(cafeLogo, BorderLayout.CENTER);

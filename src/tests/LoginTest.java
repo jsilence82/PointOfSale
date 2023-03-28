@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import view.Login;
 import view.SelectScreen;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class LoginTest {
 
     @Test
-    void testSQLInjection() {
+    void testSQLInjection() throws IOException {
         Login login = new Login(new SelectScreen());
 
         try {

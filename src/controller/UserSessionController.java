@@ -4,6 +4,7 @@ import model.User;
 import model.database.DatabaseConnection;
 import view.SelectScreen;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,7 +16,7 @@ public class UserSessionController {
     private static final Connection connection = dbConnection.getConnection();
     private static User user;
 
-    public UserSessionController(int userID, SelectScreen startProgram) {
+    public UserSessionController(int userID, SelectScreen startProgram) throws IOException {
         user = User.getInstance();
         user.setUserID(userID);
         getUserInfo(userID);
